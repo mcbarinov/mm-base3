@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>{{ config.app_name }}</title>
+  <link rel="stylesheet" href="/assets/pico.slate.min.css">
+  <style>
+    :root {
+      --pico-font-size: 110%;
+    }
+  </style>
+</head>
+<body class="container">
+
+<header>
+  <nav>
+    <ul>
+      <li><strong>{{ config.app_name }}</strong></li>
+      {% for path,title in config.main_menu.items() %}
+        <li><a href="{{ path }}">{{ title }}</a></li>
+      {% endfor %}
+      <li><a href="/system">system</a></li>
+      {% if not header_info_new_line %}
+        <li>
+          <div>{{ header_info() }}</div>
+        </li>
+      {% endif %}
+      <li><a href="/logout">logout</a></li>
+    </ul>
+  </nav>
+  {% if header_info_new_line %}
+    <div>{{ header_info() }}</div>
+  {% endif %}
+  <hr>
+</header>
+
+<main>
+  {% block content -%}
+  {%- endblock %}
+</main>
+
+<footer>
+  <hr>
+  app: v{{ config.app_version }} / mm_base3: v{{ config.mm_b1_version }} / server time: {{ now() | dt }}
+</footer>
+
+</body>
+</html>

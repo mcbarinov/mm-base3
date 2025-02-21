@@ -26,7 +26,7 @@ def footer_info(_core: Core) -> Markup:
 
 custom_jinja = CustomJinja(
     header_info=header_info,
-    header_info_new_line=True,
+    header_info_new_line=False,
     footer_info=footer_info,
     filters={"data_status": data_status},
 )

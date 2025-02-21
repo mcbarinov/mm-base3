@@ -14,6 +14,7 @@ from mm_base3.base_core import BaseCore
 from mm_base3.jinja.jinja import init_jinja
 from mm_base3.routers.api_method_router import APIMethodController
 from mm_base3.routers.auth_router import AuthController
+from mm_base3.routers.system_router import SystemController
 
 TYPE_ENCODERS = {
     DeleteResult: lambda x: x.raw_result,
@@ -35,6 +36,7 @@ def init_server[CORE: BaseCore](core: CORE, custom_jinja: CustomJinja, ui_router
             create_static_files_router(path="/assets", directories=[ASSETS]),
             APIMethodController,
             AuthController,
+            SystemController,
             ui_router,
             api_router,
         ],

@@ -1,0 +1,52 @@
+{% extends "inc/base.j2" %}
+{% block content %}
+  <h3>system</h3>
+  <div class="grid">
+    <section>
+      <h4>base</h4>
+      <table>
+        <tr>
+          <td>api</td>
+          <td><a href="#">view</a></td>
+        </tr>
+        <tr>
+          <td>config</td>
+          <td><a href="#">view</a></td>
+        </tr>
+        <tr>
+          <td>value</td>
+          <td><a href="#">view</a></td>
+        </tr>
+        <tr>
+          <td>log</td>
+          <td><a href="#">view</a></td>
+        </tr>
+        <tr>
+          <td>logfile</td>
+          <td>
+            <nav>
+              <ul>
+                <li><a href="#">view</a></li>
+                <li><a href="#">clean</a></li>
+              </ul>
+            </nav>
+          </td>
+        </tr>
+      </table>
+    </section>
+    <section>
+      <h4>db / ?</h4>
+      <table>
+        <tr>
+          <td>col1</td>
+          <td>123</td>
+        </tr>
+        <tr>
+          <td>col2</td>
+          <td>123</td>
+        </tr>
+      </table>
+    </section>
+  </div>
+
+{% endblock %}

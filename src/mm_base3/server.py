@@ -9,8 +9,9 @@ from litestar.static_files import create_static_files_router
 from litestar.types import ControllerRouterHandler
 from pymongo.results import DeleteResult, InsertOneResult
 
+from mm_base3 import CustomJinja
 from mm_base3.base_core import BaseCore
-from mm_base3.jinja import CustomJinja, init_jinja
+from mm_base3.jinja.jinja import init_jinja
 
 TYPE_ENCODERS = {
     DeleteResult: lambda x: x.raw_result,

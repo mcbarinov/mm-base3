@@ -4,8 +4,7 @@ from pydantic import Field
 from app.core import Core
 from app.jinja import custom_jinja
 from app.routers.ui_router import UIController
-from mm_base3.config import BaseConfig
-from mm_base3.server import init_server
+from mm_base3 import BaseConfig, init_server
 
 
 class AppConfig(BaseConfig):

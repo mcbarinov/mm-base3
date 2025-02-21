@@ -1,7 +1,6 @@
 from app.db import Db
 from app.services.data_service import DataService
-from mm_base3.base_core import BaseCore
-from mm_base3.config import BaseConfig
+from mm_base3 import BaseConfig, BaseCore
 
 
 class Core(BaseCore):

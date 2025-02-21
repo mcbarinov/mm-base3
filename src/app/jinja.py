@@ -2,7 +2,7 @@ from markupsafe import Markup
 
 from app.core import Core
 from app.db import DataStatus
-from mm_base3.jinja import CustomJinja
+from mm_base3 import CustomJinja
 
 
 def data_status(status: DataStatus) -> Markup:

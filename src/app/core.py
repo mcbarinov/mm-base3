@@ -8,3 +8,9 @@ class Core(BaseCore):
         super().__init__(config)
         self.db = Db(self.database)
         self.data_service = DataService(self.db)
+
+    def start(self) -> None:
+        pass
+
+    def stop(self) -> None:
+        pass

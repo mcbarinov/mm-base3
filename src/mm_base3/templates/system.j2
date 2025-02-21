@@ -35,16 +35,14 @@
       </table>
     </section>
     <section>
-      <h4>db / ?</h4>
+      <h4>db / {{ stats.db | length }}</h4>
       <table>
-        <tr>
-          <td>col1</td>
-          <td>123</td>
-        </tr>
-        <tr>
-          <td>col2</td>
-          <td>123</td>
-        </tr>
+        {% for k,v in stats.db.items() %}
+          <tr>
+            <td>{{ k }}</td>
+            <td>{{ v }}</td>
+          </tr>
+        {% endfor %}
       </table>
     </section>
   </div>

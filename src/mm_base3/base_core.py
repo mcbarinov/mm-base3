@@ -4,6 +4,8 @@ from abc import ABC, abstractmethod
 from mm_mongo import MongoConnection
 from mm_std import Scheduler, init_logger
 
+from mm_base3.base_db import BaseDb
+from mm_base3.base_service import BaseServiceParams
 from mm_base3.config import BaseConfig
 from mm_base3.system_service import SystemService
 
@@ -34,6 +36,14 @@ class BaseCore(ABC):
         self.logger.debug("app stopped")
         # noinspection PyUnresolvedReferences
         os._exit(0)
+
+    def system_log(self, category: str, data: object = None) -> None:
+        self.system_service.system_log(category, data)
+
+    def base_service_params[APP_CONFIG: BaseConfig, DB: BaseDb](
+        self, config: BaseConfig, db: BaseDb
+    ) -> BaseServiceParams[APP_CONFIG, DB]:
+        return BaseServiceParams(logger=self.logger, config=config, db=db, system_log=self.system_log)  # type: ignore[arg-type]
 
     @abstractmethod
     def start(self) -> None:

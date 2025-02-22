@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from logging import Logger
 
@@ -12,6 +13,7 @@ class BaseServiceParams[CONFIG: BaseConfig, DB: BaseDb]:
     logger: Logger
     config: CONFIG
     db: DB
+    system_log: Callable[[str, object], None]
 
 
 class BaseService[CONFIG: BaseConfig, DB: BaseDb]:
@@ -19,3 +21,4 @@ class BaseService[CONFIG: BaseConfig, DB: BaseDb]:
         self.logger = base_params.logger
         self.config = base_params.config
         self.db = base_params.db
+        self.system_log = base_params.system_log

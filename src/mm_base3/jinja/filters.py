@@ -3,6 +3,7 @@ from datetime import datetime
 from decimal import Decimal
 
 from markupsafe import Markup
+from mm_mongo import json_dumps
 
 
 def timestamp(value: datetime | int | None, format_: str = "%Y-%m-%d %H:%M:%S") -> str:
@@ -65,6 +66,15 @@ def json_url_encode(data: dict[str, object]) -> str:
     return json.dumps(data)
 
 
+def system_log_data_truncate(data: object) -> str:
+    if not data:
+        return ""
+    res = json_dumps(data)
+    if len(res) > 100:
+        return res[:100] + "..."
+    return res
+
+
 BASE_FILTERS = {
     "timestamp": timestamp,
     "dt": timestamp,
@@ -73,4 +83,5 @@ BASE_FILTERS = {
     "nformat": nformat,
     "n": nformat,
     "json_url_encode": json_url_encode,
+    "system_log_data_truncate": system_log_data_truncate,
 }

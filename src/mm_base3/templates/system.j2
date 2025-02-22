@@ -3,7 +3,6 @@
   <h3>system</h3>
   <div class="grid">
     <section>
-      <h4>base</h4>
       <table>
         <tr>
           <td>api</td>
@@ -11,19 +10,19 @@
           <td><a href="#">view</a></td>
         </tr>
         <tr>
-          <td>config</td>
+          <td>system config</td>
           <td></td>
           <td><a href="#">view</a></td>
         </tr>
         <tr>
-          <td>value</td>
+          <td>system value</td>
           <td></td>
           <td><a href="#">view</a></td>
         </tr>
         <tr>
-          <td>log</td>
-          <td></td>
-          <td><a href="#">view</a></td>
+          <td>system log</td>
+          <td>{{ stats.system_log }}</td>
+          <td><a href="/system/system-logs">view</a></td>
         </tr>
         <tr>
           <td>logfile</td>
@@ -40,8 +39,8 @@
       </table>
     </section>
     <section>
-      <h4>db / {{ stats.db | length }}</h4>
       <table>
+        <caption>db / {{ stats.db | length }}</caption>
         {% for k,v in stats.db.items() %}
           <tr>
             <td>{{ k }}</td>

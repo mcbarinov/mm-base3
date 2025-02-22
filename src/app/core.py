@@ -9,7 +9,7 @@ class Core(BaseCore):
     def __init__(self, config: AppConfig) -> None:
         super().__init__(config)
         self.db = Db(self.database)
-        base_params = BaseServiceParams[AppConfig, Db](logger=self.logger, config=config, db=self.db)
+        base_params: BaseServiceParams[AppConfig, Db] = self.base_service_params(config, self.db)
 
         self.data_service = DataService(base_params)
 

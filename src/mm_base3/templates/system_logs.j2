@@ -1,0 +1,23 @@
+{% extends "inc/base.j2" %}
+{% block content %}
+  <h3>system logs</h3>
+
+  <table>
+    <tr>
+      <th>created_at</th>
+      <th>category</th>
+      <th>data</th>
+      <th>delete</th>
+      <th>view</th>
+    </tr>
+    {% for l in system_logs %}
+      <tr>
+        <td>{{ l.created_at | dt }}</td>
+        <td>{{ l.category }}</td>
+        <td>{{ l.data | system_log_data_truncate }}</td>
+        <td><a href="/api-delete/system/system-logs/{{ l.id }}">delete</a></td>
+        <td><a href="/api/system/system-logs/{{ l.id }}">view</a></td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

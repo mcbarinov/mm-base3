@@ -3,9 +3,17 @@
 
   <div>
     <h3>data</h3>
-{#    {{ inline_form(form, submit="filter") }}#}
-    <a href="/api-post/data/generate">generate</a>
-    <a href="/upload">upload</a>
+    {#    {{ inline_form(form, submit="filter") }}#}
+
+    <nav>
+      <ul>
+        <li><a href="/api-post/data/generate">generate</a></li>
+        <li><a href="/upload">upload</a></li>
+        <li><a href="/api/data/exception">raise exception</a></li>
+      </ul>
+    </nav>
+
+
   </div>
 
   <table id="t1" class="table table-sm sortable">

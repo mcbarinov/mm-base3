@@ -6,7 +6,7 @@ from litestar.response import Redirect, Template
 from pydantic import BaseModel
 
 from mm_base3 import BaseCore, render_html
-from mm_base3.auth import TOKEN_NAME
+from mm_base3.auth import ACCESS_TOKEN_NAME
 from mm_base3.types_ import FormBody
 
 
@@ -24,7 +24,7 @@ class AuthController(Controller):
     @post("/login")
     def login(self, core: BaseCore, data: Annotated[LoginForm, FormBody]) -> Redirect:
         cookie = Cookie(
-            key=TOKEN_NAME,
+            key=ACCESS_TOKEN_NAME,
             value=data.access_token,
             domain=core.config.domain,
             httponly=True,
@@ -34,4 +34,4 @@ class AuthController(Controller):
 
     @get("/logout")
     def logout(self) -> Redirect:
-        return Redirect(path="/auth/login", cookies=[Cookie(key=TOKEN_NAME, value="")])
+        return Redirect(path="/auth/login", cookies=[Cookie(key=ACCESS_TOKEN_NAME, value="")])

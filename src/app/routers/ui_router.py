@@ -9,7 +9,7 @@ class PageController(Controller):
     path = "/"
     tags = ["ui"]
 
-    @get("/")
+    @get()
     def index(self) -> Template:
         return render_html("index.j2")
 

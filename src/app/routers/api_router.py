@@ -11,9 +11,13 @@ class DataController(Controller):
     path = "/data"
     tags = ["data"]
 
-    @get("/")
+    @get()
     def find_data(self, core: Core, status: DataStatus | None = None, limit: int = 100) -> list[Data]:
         return core.db.data.find(mongo_query(status=status), "-created_at", limit)
+
+    @get("/exception")
+    def raise_exception(self) -> None:
+        raise ValueError("test exception")
 
     @post("/generate")
     def generate_data(self, core: Core) -> InsertOneResult:

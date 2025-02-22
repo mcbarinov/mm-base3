@@ -7,27 +7,32 @@
       <table>
         <tr>
           <td>api</td>
+          <td></td>
           <td><a href="#">view</a></td>
         </tr>
         <tr>
           <td>config</td>
+          <td></td>
           <td><a href="#">view</a></td>
         </tr>
         <tr>
           <td>value</td>
+          <td></td>
           <td><a href="#">view</a></td>
         </tr>
         <tr>
           <td>log</td>
+          <td></td>
           <td><a href="#">view</a></td>
         </tr>
         <tr>
           <td>logfile</td>
+          <td>{{ stats.logfile | filesizeformat }}</td>
           <td>
             <nav>
               <ul>
-                <li><a href="#">view</a></li>
-                <li><a href="#">clean</a></li>
+                <li><a href="/api/system/logfile">view</a></li>
+                <li><a href="/api-delete/system/logfile" {{ confirm }}>clean</a></li>
               </ul>
             </nav>
           </td>

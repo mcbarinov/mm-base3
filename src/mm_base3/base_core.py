@@ -15,7 +15,7 @@ class BaseCore(ABC):
         conn = MongoConnection(config.database_url)
         self.mongo_client = conn.client
         self.database = conn.database
-        self.system_service = SystemService(self.logger, self.database)
+        self.system_service: SystemService = SystemService(config, self.logger, self.database)
         self.scheduler = Scheduler(self.logger, debug=debug_scheduler)
 
     def startup(self) -> None:

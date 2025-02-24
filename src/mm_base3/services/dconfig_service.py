@@ -6,7 +6,7 @@ from decimal import Decimal
 from typing import Any, ClassVar, cast, overload
 
 import pydash
-import yaml
+import toml
 from mm_std import Err, Ok, Result, utc_now
 
 from mm_base3.base_db import BaseDb, DConfig, DConfigType
@@ -129,7 +129,7 @@ class DConfigService:
         self.db.dconfig.set(key, {"value": value, "updated_at": utc_now()})
         self.storage[key] = value
 
-    def update(self, data: dict[str, str]) -> bool:
+    def update_dconfig_values(self, data: dict[str, str]) -> bool:
         result = True
         for key in data:
             if key in self.storage:
@@ -147,14 +147,25 @@ class DConfigService:
                 result = False
         return result
 
-    def update_dconfig_yaml(self, yaml_value: str) -> bool | None:
-        data = yaml.full_load(yaml_value)
-        if isinstance(data, dict):
-            return self.update(data)
-
-    def export_dconfig_yaml(self) -> str:
+    def export_dconfig_as_toml(self) -> str:
         result = pydash.omit(self.storage, *self.storage.hidden)
-        return yaml.dump(result, explicit_end=True, default_style="'", sort_keys=False)
+        return toml.dumps(result)
+
+    def update_dconfig_from_toml(self, toml_value: str) -> bool | None:
+        data = toml.loads(toml_value)
+
+        if isinstance(data, dict):
+            return self.update_dconfig_values({key: str(value) for key, value in data.items()})
+
+    # def update_dconfig_yaml(self, yaml_value: str) -> bool | None:
+    #     data = yaml.full_load(yaml_value)
+    #     if isinstance(data, dict):
+    #         return self.update(data)
+    #
+    # def export_dconfig_yaml(self) -> str:
+    #     result = pydash.omit(self.storage, *self.storage.hidden)
+    #     return yaml.dump(result, explicit_end=True, default_style="'", sort_keys=False)
+    #
 
 
 def get_registered_attributes(obj: object) -> list[str]:
@@ -178,7 +189,7 @@ def get_type(value: object) -> DConfigType:
 def get_typed_value(type_: DConfigType, str_value: str) -> Result[Any]:
     try:
         if type_ == DConfigType.BOOLEAN:
-            return Ok(bool(str_value))
+            return Ok(str_value.lower() == "true")
         if type_ == DConfigType.INTEGER:
             return Ok(int(str_value))
         if type_ == DConfigType.FLOAT:

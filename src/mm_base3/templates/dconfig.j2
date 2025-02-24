@@ -8,8 +8,8 @@
       </ul>
       <ul>
         <li></li>
-        <li><a href="#">update</a></li>
-        <li><a href="#">view</a></li>
+        <li><a href="/system/dconfig/toml">update</a></li>
+        <li><a href="/api/system/dconfig/toml">view</a></li>
       </ul>
     </nav>
   </div>
@@ -22,20 +22,22 @@
         <th>value</th>
       </tr>
       {% for key, value in dconfig.items() %}
-        <tr>
-          <td>{{ key }}</td>
-          <td>{{ dconfig.types[key].value }}</td>
-          <td>
-            {% if dconfig.types[key].value == "BOOLEAN" %}
-              <input type="checkbox" name="{{ key }}" {{ "checked" if value }}>
-            {% elif dconfig.types[key].value =="MULTILINE" %}
-              length: {{ dconfig[key] | length }} /
-              <a href="/system/dconfig/multiline/{{ key }}">update</a>
-            {% else %}
-              <input name="{{ key }}" value="{{ value }}">
-            {% endif %}
-          </td>
-        </tr>
+        {% if key not in dconfig.hidden %}
+          <tr>
+            <td>{{ key }}</td>
+            <td>{{ dconfig.types[key].value }}</td>
+            <td>
+              {% if dconfig.types[key].value == "BOOLEAN" %}
+                <input type="checkbox" name="{{ key }}" {{ "checked" if value }} value="true">
+              {% elif dconfig.types[key].value =="MULTILINE" %}
+                length: {{ dconfig[key] | length }} /
+                <a href="/system/dconfig/multiline/{{ key }}">update</a>
+              {% else %}
+                <input name="{{ key }}" value="{{ value }}">
+              {% endif %}
+            </td>
+          </tr>
+        {% endif %}
       {% endfor %}
     </table>
     <input type="submit" value="Save">

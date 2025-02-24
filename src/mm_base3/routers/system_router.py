@@ -7,7 +7,7 @@ from pymongo.results import DeleteResult
 
 from mm_base3 import render_html
 from mm_base3.base_core import BaseCoreAny
-from mm_base3.base_db import DLog
+from mm_base3.base_db import DConfigType, DLog
 from mm_base3.services.system_service import Stats
 from mm_base3.types_ import FormBody
 
@@ -30,6 +30,11 @@ class SystemUIController(Controller):
         dconfig = core.dconfig
         return render_html("dconfig.j2", dconfig=dconfig)
 
+    @get("dconfig/toml")
+    def dconfig_toml_page(self, core: BaseCoreAny) -> Template:
+        toml_str = core.dconfig_service.export_dconfig_as_toml()
+        return render_html("dconfig_toml.j2", toml_str=toml_str)
+
     @get("dconfig/multiline/{key:str}")
     def update_dconfig_multiline_page(self, core: BaseCoreAny, key: str) -> Template:
         dconfig = core.dconfig
@@ -37,12 +42,21 @@ class SystemUIController(Controller):
 
     @post("dconfig")
     def update_dconfig(self, core: BaseCoreAny, data: Annotated[dict[str, str], FormBody]) -> Redirect:
-        core.dconfig_service.update(data)
+        """Update dconfig values  that are neither multiline nor hidden"""
+        update_data = {
+            x: data.get(x, "") for x in core.dconfig.get_non_hidden_keys() if core.dconfig.get_type(x) != DConfigType.MULTILINE
+        }
+        core.dconfig_service.update_dconfig_values(update_data)
         return Redirect(path="/system/dconfig")  # TODO: flash message
 
     @post("dconfig/multiline/{key:str}")
     def update_dconfig_multiline(self, core: BaseCoreAny, key: str, data: Annotated[dict[str, str], FormBody]) -> Redirect:
         core.dconfig_service.update_multiline(key, data["value"])
+        return Redirect(path="/system/dconfig")  # TODO: flash message
+
+    @post("dconfig/toml")
+    def update_dconfig_from_toml(self, core: BaseCoreAny, data: Annotated[dict[str, str], FormBody]) -> Redirect:
+        core.dconfig_service.update_dconfig_from_toml(data["value"])
         return Redirect(path="/system/dconfig")  # TODO: flash message
 
 
@@ -56,6 +70,14 @@ class DLogController(Controller):
     @delete("{id:str}", status_code=200)
     def delete_dlog(self, core: BaseCoreAny, id: str) -> DeleteResult:
         return core.db.dlog.delete(ObjectId(id))
+
+
+class DConfigController(Controller):
+    path = "/api/system/dconfig"
+
+    @get("toml")
+    def get_dconfigs_as_toml(self, core: BaseCoreAny) -> str:
+        return core.dconfig_service.export_dconfig_as_toml()
 
 
 class SystemAPIController(Controller):
@@ -74,4 +96,4 @@ class SystemAPIController(Controller):
         core.system_service.clean_logfile()
 
 
-system_router = Router(path="/", route_handlers=[SystemUIController, DLogController, SystemAPIController])
+system_router = Router(path="/", route_handlers=[SystemUIController, DLogController, DConfigController, SystemAPIController])

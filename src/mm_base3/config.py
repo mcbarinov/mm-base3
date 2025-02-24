@@ -15,7 +15,7 @@ def _get_package_version(package: str) -> str:
         return " unknown"
 
 
-class BaseConfig(BaseSettings):
+class BaseAppConfig(BaseSettings):
     app_name: str
     data_dir: Path
     access_token: str

@@ -3,7 +3,7 @@ from enum import Enum, unique
 from typing import ClassVar
 
 from bson import ObjectId
-from mm_mongo import DatabaseAny, MongoCollection, MongoModel
+from mm_mongo import MongoCollection, MongoModel
 from mm_std import utc_now
 from pydantic import Field
 
@@ -39,7 +39,3 @@ class Data(MongoModel[ObjectId]):
 
 class Db(BaseDb):
     data: MongoCollection[ObjectId, Data]
-
-    def __init__(self, database: DatabaseAny) -> None:
-        super().__init__(database)
-        self.data = MongoCollection(database, Data)

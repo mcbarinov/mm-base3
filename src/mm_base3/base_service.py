@@ -5,20 +5,23 @@ from dataclasses import dataclass
 from logging import Logger
 
 from mm_base3.base_db import BaseDb
-from mm_base3.config import BaseConfig
+from mm_base3.config import BaseAppConfig
+from mm_base3.services.dconfig_service import DConfigDict
 
 
 @dataclass
-class BaseServiceParams[CONFIG: BaseConfig, DB: BaseDb]:
-    logger: Logger
-    config: CONFIG
+class BaseServiceParams[APP_CONFIG: BaseAppConfig, DCONFIG: DConfigDict, DB: BaseDb]:
+    app_config: APP_CONFIG
+    dconfig: DCONFIG
     db: DB
-    system_log: Callable[[str, object], None]
+    logger: Logger
+    dlog: Callable[[str, object], None]
 
 
-class BaseService[CONFIG: BaseConfig, DB: BaseDb]:
-    def __init__(self, base_params: BaseServiceParams[CONFIG, DB]) -> None:
-        self.logger = base_params.logger
-        self.config = base_params.config
+class BaseService[APP_CONFIG: BaseAppConfig, DCONFIG: DConfigDict, DB: BaseDb]:
+    def __init__(self, base_params: BaseServiceParams[APP_CONFIG, DCONFIG, DB]) -> None:
+        self.app_config = base_params.app_config
+        self.dconfig = base_params.dconfig
         self.db = base_params.db
-        self.system_log = base_params.system_log
+        self.logger = base_params.logger
+        self.dlog = base_params.dlog

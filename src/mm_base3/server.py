@@ -12,7 +12,7 @@ from pymongo.results import DeleteResult, InsertOneResult, UpdateResult
 
 from mm_base3 import CustomJinja
 from mm_base3.auth import AuthMiddleware
-from mm_base3.base_core import BaseCore
+from mm_base3.base_core import BaseCoreAny
 from mm_base3.errors import UserError
 from mm_base3.jinja.jinja import init_jinja
 from mm_base3.routers.api_method_router import APIMethodController
@@ -29,9 +29,9 @@ TYPE_ENCODERS = {
 ASSETS = Path(__file__).parent.absolute() / "assets"
 
 
-def init_server[CORE: BaseCore](core: CORE, custom_jinja: CustomJinja, ui_router: Router, api_router: Router) -> Litestar:
-    def core_dep(state: State) -> CORE:
-        return cast(CORE, state.get("core"))
+def init_server(core: BaseCoreAny, custom_jinja: CustomJinja, ui_router: Router, api_router: Router) -> Litestar:
+    def core_dep(state: State) -> BaseCoreAny:
+        return cast(BaseCoreAny, state.get("core"))
 
     auth_mw = DefineMiddleware(AuthMiddleware, exclude="/auth/")
     return Litestar(
@@ -52,7 +52,7 @@ def init_server[CORE: BaseCore](core: CORE, custom_jinja: CustomJinja, ui_router
         type_encoders=TYPE_ENCODERS,
         on_shutdown=[lambda: core.shutdown()],
         exception_handlers={Exception: all_exceptions_handler},
-        debug=core.config.debug,
+        debug=core.app_config.debug,
     )
 
 
@@ -69,7 +69,7 @@ def all_exceptions_handler(req: Request[Any, Any, Any], exc: Exception) -> Respo
             core.logger.exception(exc)
             message += "\n\n" + traceback.format_exc()
 
-        if not core.config.debug:
+        if not core.app_config.debug:
             message = "error"
 
     return Response(media_type=MediaType.TEXT, content=message, status_code=code)

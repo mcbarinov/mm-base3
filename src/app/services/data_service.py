@@ -3,21 +3,21 @@ import random
 from bson import ObjectId
 from pymongo.results import InsertManyResult, InsertOneResult
 
-from app.config import AppConfig
+from app.config import AppConfig, DConfigSettings
 from app.db import Data, DataStatus, Db
-from mm_base3 import BaseService
-from mm_base3.base_service import BaseServiceParams
+from mm_base3.base_service import BaseService, BaseServiceParams
 
 
-class DataService(BaseService[AppConfig, Db]):
-    def __init__(self, base_params: BaseServiceParams[AppConfig, Db]) -> None:
+class DataService(BaseService[AppConfig, DConfigSettings, Db]):
+    def __init__(self, base_params: BaseServiceParams[AppConfig, DConfigSettings, Db]) -> None:
         super().__init__(base_params)
 
     def generate_data(self) -> InsertOneResult:
         status = random.choice(list(DataStatus))
         value = random.randint(0, 1_000_000)
         self.logger.debug("generate_data %s %s", status, value)
-        self.system_log("data_generated", {"status": status, "value": value, "large-data": "abc" * 100})
+        self.dlog("data_generated", {"status": status, "value": value, "large-data": "abc" * 100})
+
         # self.send_telegram_message(f"a new data: {value}")
 
         return self.db.data.insert_one(Data(id=ObjectId(), status=status, value=value))

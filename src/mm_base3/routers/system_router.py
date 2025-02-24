@@ -2,8 +2,6 @@ from typing import Annotated
 
 from bson import ObjectId
 from litestar import Controller, Router, delete, get, post
-from litestar.enums import RequestEncodingType
-from litestar.params import Body
 from litestar.response import Redirect, Template
 from pymongo.results import DeleteResult
 
@@ -11,6 +9,7 @@ from mm_base3 import render_html
 from mm_base3.base_core import BaseCoreAny
 from mm_base3.base_db import DLog
 from mm_base3.services.system_service import Stats
+from mm_base3.types_ import FormBody
 
 
 class SystemUIController(Controller):
@@ -37,12 +36,14 @@ class SystemUIController(Controller):
         return render_html("dconfig_multiline.j2", dconfig=dconfig, key=key)
 
     @post("dconfig")
-    def update_dconfig(
-        self, core: BaseCoreAny, data: Annotated[dict[str, str], Body(media_type=RequestEncodingType.URL_ENCODED)]
-    ) -> Redirect:
+    def update_dconfig(self, core: BaseCoreAny, data: Annotated[dict[str, str], FormBody]) -> Redirect:
         core.dconfig_service.update(data)
-        # TODO: flash message
-        return Redirect(path="/system/dconfig")
+        return Redirect(path="/system/dconfig")  # TODO: flash message
+
+    @post("dconfig/multiline/{key:str}")
+    def update_dconfig_multiline(self, core: BaseCoreAny, key: str, data: Annotated[dict[str, str], FormBody]) -> Redirect:
+        core.dconfig_service.update_multiline(key, data["value"])
+        return Redirect(path="/system/dconfig")  # TODO: flash message
 
 
 class DLogController(Controller):

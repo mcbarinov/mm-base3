@@ -140,10 +140,10 @@ class DConfigService:
                     self.db.dconfig.set(key, {"value": str_value, "updated_at": utc_now()})
                     self.storage[key] = type_value_res.ok
                 else:
-                    self.dlog_service.dlog("dconfig_service_update", {"error": type_value_res.err, "key": key})
+                    self.dlog_service.dlog("dconfig_service.update", {"error": type_value_res.err, "key": key})
                     result = False
             else:
-                self.dlog_service.dlog("dconfig_service_update", {"error": "unknown key", "key": key})
+                self.dlog_service.dlog("dconfig_service.update", {"error": "unknown key", "key": key})
                 result = False
         return result
 

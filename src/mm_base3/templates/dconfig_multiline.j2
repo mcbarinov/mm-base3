@@ -6,10 +6,8 @@
   </div>
 
   <form method="post">
-    <textarea name="data" rows="10" cols="30">{{ dconfig[key] }}</textarea>
+    <textarea name="value" rows="10" cols="30">{{ dconfig[key] }}</textarea>
     <input type="submit" value="update">
   </form>
-
-  {#  {{ simple_form(form, action="/update-dconfig-multiline/"+key, submit="update") }}#}
 
 {% endblock %}

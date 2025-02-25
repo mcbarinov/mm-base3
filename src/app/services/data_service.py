@@ -1,6 +1,7 @@
 import random
 
 from bson import ObjectId
+from mm_std import hr
 from pymongo.results import InsertManyResult, InsertOneResult
 
 from app.config import AppConfig, DConfigSettings, DValueSettings
@@ -16,10 +17,9 @@ class DataService(BaseService[AppConfig, DConfigSettings, DValueSettings, Db]):
         status = random.choice(list(DataStatus))
         value = random.randint(0, 1_000_000)
         self.logger.debug("generate_data %s %s", status, value)
-        self.dlog("data_generated", {"status": status, "value": value, "large-data": "abc" * 100})
-
+        res = hr("https://httpbin.org/get")
+        self.dlog("data_generated", {"status": status, "value": value, "res": res.json, "large-data": "abc" * 100})
         # self.send_telegram_message(f"a new data: {value}")
-
         return self.db.data.insert_one(Data(id=ObjectId(), status=status, value=value))
 
     def generate_many(self) -> InsertManyResult:

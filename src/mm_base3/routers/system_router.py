@@ -16,6 +16,7 @@ from mm_base3.types_ import FormBody
 
 class SystemUIController(Controller):
     path = "/system"
+    include_in_schema = False
 
     @get()
     def system_page(self, core: BaseCoreAny) -> Template:
@@ -123,5 +124,7 @@ class SystemAPIController(Controller):
 
 
 system_router = Router(
-    path="/", route_handlers=[SystemUIController, DLogController, DConfigController, DValueController, SystemAPIController]
+    path="/",
+    tags=["system"],
+    route_handlers=[SystemUIController, DLogController, DConfigController, DValueController, SystemAPIController],
 )

@@ -11,6 +11,8 @@ type RequestAny = Request[Any, Any, Any]
 
 class APIMethodController(Controller):
     path = "/"
+    include_in_schema = False
+    tags = ["api-method"]
 
     @get("/api-post/{url:path}", sync_to_thread=True)
     def post(self, core: BaseCoreAny, url: str, request: RequestAny) -> Response[Any]:

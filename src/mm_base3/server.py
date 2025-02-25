@@ -6,6 +6,8 @@ from bson import ObjectId
 from litestar import Litestar, MediaType, Request, Response, Router
 from litestar.datastructures import State
 from litestar.middleware import DefineMiddleware
+from litestar.openapi import OpenAPIConfig
+from litestar.openapi.spec import Tag
 from litestar.static_files import create_static_files_router
 from litestar.status_codes import HTTP_500_INTERNAL_SERVER_ERROR
 from pymongo.results import DeleteResult, InsertOneResult, UpdateResult
@@ -51,6 +53,11 @@ def init_server(core: BaseCoreAny, custom_jinja: CustomJinja, ui_router: Router,
         on_shutdown=[lambda: core.shutdown()],
         exception_handlers={Exception: all_exceptions_handler},
         debug=core.app_config.debug,
+        openapi_config=OpenAPIConfig(
+            title=core.app_config.app_name,
+            version=core.app_config.app_version,
+            tags=[*[Tag(name=t) for t in core.app_config.tags], Tag(name="system", description="mm-base3 system api")],
+        ),
     )
 
 

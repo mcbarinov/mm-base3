@@ -22,4 +22,4 @@ class ActionController(Controller):
     path = "/"
 
 
-ui_router = Router(path="/", route_handlers=[PageController, ActionController])
+ui_router = Router(path="/", tags=["ui"], route_handlers=[PageController, ActionController], include_in_schema=False)

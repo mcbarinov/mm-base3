@@ -2,23 +2,25 @@ import os
 from abc import ABC, abstractmethod
 from typing import cast
 
+from bson import ObjectId
 from mm_mongo import MongoConnection
 from mm_std import Scheduler, init_logger
 
-from mm_base3.base_db import BaseDb
+from mm_base3.base_db import BaseDb, DLog
 from mm_base3.base_service import BaseServiceParams
 from mm_base3.config import BaseAppConfig
-from mm_base3.services.dconfig_service import DConfigDict, DConfigService
-from mm_base3.services.dlog_service import DLogService
-from mm_base3.services.system_service import SystemService
+from mm_base3.dconfig import DConfigDict, DConfigStorage
+from mm_base3.dvalue import DValueDict, DValueStorage
+from mm_base3.system_service import SystemService
 
 
-class BaseCore[APP_CONFIG: BaseAppConfig, DCONFIG: DConfigDict, DB: BaseDb](ABC):
+class BaseCore[APP_CONFIG_T: BaseAppConfig, DCONFIG_T: DConfigDict, DVALUE_T: DValueDict, DB_T: BaseDb](ABC):
     def __init__(
         self,
-        app_config_settings: type[APP_CONFIG],
-        dconfig_settings: type[DCONFIG],
-        db_settings: type[DB],
+        app_config_settings: type[APP_CONFIG_T],
+        dconfig_settings: type[DCONFIG_T],
+        dvalue_settings: type[DVALUE_T],
+        db_settings: type[DB_T],
         debug_scheduler: bool = False,
     ) -> None:
         self.app_config = app_config_settings()
@@ -26,12 +28,12 @@ class BaseCore[APP_CONFIG: BaseAppConfig, DCONFIG: DConfigDict, DB: BaseDb](ABC)
         conn = MongoConnection(self.app_config.database_url)
         self.mongo_client = conn.client
         self.database = conn.database
-        self.db: DB = db_settings.init_collections(self.database)
-        self.dlog_service: DLogService = DLogService(self.db, self.logger)
-        self.dconfig_service = DConfigService(self.db, self.dlog_service)
+        self.db: DB_T = db_settings.init_collections(self.database)
+
         self.system_service: SystemService = SystemService(self.app_config, self.logger, self.db)
 
-        self.dconfig: DCONFIG = cast(DCONFIG, self.dconfig_service.init_storage(dconfig_settings))
+        self.dconfig: DCONFIG_T = cast(DCONFIG_T, DConfigStorage.init_storage(self.db.dconfig, dconfig_settings, self.dlog))
+        self.dvalue: DVALUE_T = cast(DVALUE_T, DValueStorage.init_storage(self.db.dvalue, dvalue_settings))
 
         self.scheduler = Scheduler(self.logger, debug=debug_scheduler)
 
@@ -53,28 +55,19 @@ class BaseCore[APP_CONFIG: BaseAppConfig, DCONFIG: DConfigDict, DB: BaseDb](ABC)
         os._exit(0)
 
     def dlog(self, category: str, data: object = None) -> None:
-        self.dlog_service.dlog(category, data)
+        self.logger.debug("system_log %s %s", category, data)
+        self.db.dlog.insert_one(DLog(id=ObjectId(), category=category, data=data))
 
     @property
-    def base_service_params(self) -> BaseServiceParams[APP_CONFIG, DCONFIG, DB]:
+    def base_service_params(self) -> BaseServiceParams[APP_CONFIG_T, DCONFIG_T, DVALUE_T, DB_T]:
         return BaseServiceParams(
             logger=self.logger,
             app_config=self.app_config,
             dconfig=self.dconfig,
+            dvalue=self.dvalue,
             db=self.db,
             dlog=self.dlog,
         )
-
-    # def base_service_params(
-    #     self, app_config: BaseAppConfig, dconfig: DCONFIG, db: BaseDb
-    # ) -> BaseServiceParams[APP_CONFIG, DCONFIG, DB]:
-    #     return BaseServiceParams[APP_CONFIG, DCONFIG, DB](
-    #         logger=self.logger,
-    #         app_config=app_config,
-    #         dconfig=dconfig,
-    #         db=db,
-    #         system_log=self.system_log,
-    #     )  # type: ignore[arg-type]
 
     @abstractmethod
     def start(self) -> None:
@@ -85,4 +78,4 @@ class BaseCore[APP_CONFIG: BaseAppConfig, DCONFIG: DConfigDict, DB: BaseDb](ABC)
         pass
 
 
-type BaseCoreAny = BaseCore[BaseAppConfig, DConfigDict, BaseDb]
+type BaseCoreAny = BaseCore[BaseAppConfig, DConfigDict, DValueDict, BaseDb]

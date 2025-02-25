@@ -19,6 +19,7 @@ def base_globals(core: BaseCoreAny, custom_jinja: CustomJinja) -> dict[str, obje
         "raise": raise_,
         "app_config": core.app_config,
         "dconfig": core.dconfig,
+        "dvalue": core.dvalue,
         "now": utc_now,
         "confirm": Markup(""" onclick="return confirm('sure?')" """),
         "header_info": partial(header_info, core),

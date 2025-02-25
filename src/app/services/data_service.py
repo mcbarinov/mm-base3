@@ -3,13 +3,13 @@ import random
 from bson import ObjectId
 from pymongo.results import InsertManyResult, InsertOneResult
 
-from app.config import AppConfig, DConfigSettings
+from app.config import AppConfig, DConfigSettings, DValueSettings
 from app.db import Data, DataStatus, Db
 from mm_base3.base_service import BaseService, BaseServiceParams
 
 
-class DataService(BaseService[AppConfig, DConfigSettings, Db]):
-    def __init__(self, base_params: BaseServiceParams[AppConfig, DConfigSettings, Db]) -> None:
+class DataService(BaseService[AppConfig, DConfigSettings, DValueSettings, Db]):
+    def __init__(self, base_params: BaseServiceParams[AppConfig, DConfigSettings, DValueSettings, Db]) -> None:
         super().__init__(base_params)
 
     def generate_data(self) -> InsertOneResult:

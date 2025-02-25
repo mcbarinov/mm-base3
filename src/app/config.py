@@ -1,9 +1,9 @@
 from decimal import Decimal
 
+from mm_std import utc_now
 from pydantic import Field
 
-from mm_base3 import BaseAppConfig
-from mm_base3.services.dconfig_service import DC, DConfigDict
+from mm_base3 import DC, DV, BaseAppConfig, DConfigDict, DValueDict
 
 
 class AppConfig(BaseAppConfig):
@@ -23,3 +23,10 @@ class DConfigSettings(DConfigDict):
     price = DC(Decimal("1.23"), "long long long long long long long long long long long long long long long long ")
     secret_password = DC("abc", hide=True)
     long_cfg_1 = DC("many lines\n" * 5)
+
+
+class DValueSettings(DValueDict):
+    tmp1 = DV("bla")
+    tmp2 = DV("bla")
+    processed_block = DV(111, "bla bla about processed_block")
+    last_checked_at = DV(utc_now(), "bla bla about last_checked_at", False)

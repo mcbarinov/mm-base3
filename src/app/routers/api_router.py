@@ -16,7 +16,8 @@ class DataController(Controller):
         return core.db.data.find(mongo_query(status=status), "-created_at", limit)
 
     @get("/exception")
-    def raise_exception(self) -> None:
+    def raise_exception(self, core: Core) -> None:
+        core.dlog("sdsd", core.dvalue.tmp3)
         raise ValueError("test exception")
 
     @post("/generate")

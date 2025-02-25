@@ -17,6 +17,7 @@ class LoginForm(BaseModel):
 
 class AuthController(Controller):
     path = "/auth"
+    tags = ["auth"]
 
     @get("/login")
     def login_page(self) -> Template:

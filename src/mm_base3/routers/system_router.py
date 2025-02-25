@@ -7,8 +7,10 @@ from pymongo.results import DeleteResult
 
 from mm_base3 import render_html
 from mm_base3.base_core import BaseCoreAny
-from mm_base3.base_db import DConfigType, DLog
-from mm_base3.services.system_service import Stats
+from mm_base3.base_db import DConfigType, DLog, DValue
+from mm_base3.dconfig import DConfigStorage
+from mm_base3.dvalue import DValueStorage
+from mm_base3.system_service import Stats
 from mm_base3.types_ import FormBody
 
 
@@ -30,10 +32,14 @@ class SystemUIController(Controller):
         dconfig = core.dconfig
         return render_html("dconfig.j2", dconfig=dconfig)
 
+    @get("dvalue")
+    def dvalue_page(self, core: BaseCoreAny) -> Template:
+        dvalue = core.dvalue
+        return render_html("dvalue.j2", dvalue=dvalue)
+
     @get("dconfig/toml")
-    def dconfig_toml_page(self, core: BaseCoreAny) -> Template:
-        toml_str = core.dconfig_service.export_dconfig_as_toml()
-        return render_html("dconfig_toml.j2", toml_str=toml_str)
+    def dconfig_toml_page(self) -> Template:
+        return render_html("dconfig_toml.j2", toml_str=DConfigStorage.export_as_toml())
 
     @get("dconfig/multiline/{key:str}")
     def update_dconfig_multiline_page(self, core: BaseCoreAny, key: str) -> Template:
@@ -46,17 +52,17 @@ class SystemUIController(Controller):
         update_data = {
             x: data.get(x, "") for x in core.dconfig.get_non_hidden_keys() if core.dconfig.get_type(x) != DConfigType.MULTILINE
         }
-        core.dconfig_service.update_dconfig_values(update_data)
+        DConfigStorage.update(update_data)
         return Redirect(path="/system/dconfig")  # TODO: flash message
 
     @post("dconfig/multiline/{key:str}")
-    def update_dconfig_multiline(self, core: BaseCoreAny, key: str, data: Annotated[dict[str, str], FormBody]) -> Redirect:
-        core.dconfig_service.update_multiline(key, data["value"])
+    def update_dconfig_multiline(self, key: str, data: Annotated[dict[str, str], FormBody]) -> Redirect:
+        DConfigStorage.update_multiline(key, data["value"])
         return Redirect(path="/system/dconfig")  # TODO: flash message
 
     @post("dconfig/toml")
-    def update_dconfig_from_toml(self, core: BaseCoreAny, data: Annotated[dict[str, str], FormBody]) -> Redirect:
-        core.dconfig_service.update_dconfig_from_toml(data["value"])
+    def update_dconfig_from_toml(self, data: Annotated[dict[str, str], FormBody]) -> Redirect:
+        DConfigStorage.update_from_toml(data["value"])
         return Redirect(path="/system/dconfig")  # TODO: flash message
 
 
@@ -73,11 +79,31 @@ class DLogController(Controller):
 
 
 class DConfigController(Controller):
-    path = "/api/system/dconfig"
+    path = "/api/system/dconfigs"
 
     @get("toml")
-    def get_dconfigs_as_toml(self, core: BaseCoreAny) -> str:
-        return core.dconfig_service.export_dconfig_as_toml()
+    def get_dconfigs_as_toml(self) -> str:
+        return DConfigStorage.export_as_toml()
+
+
+class DValueController(Controller):
+    path = "/api/system/dvalues"
+
+    @get("toml")
+    def get_dvalue_as_toml(self) -> str:
+        return DValueStorage.export_as_toml()
+
+    @get("{key:str}/toml")
+    def get_field_as_toml(self, key: str) -> str:
+        return DValueStorage.export_field_as_toml(key)
+
+    @get("{key:str}/value")
+    def get_value(self, core: BaseCoreAny, key: str) -> object:
+        return core.dvalue.get(key)
+
+    @get("{key:str}")
+    def get_dvalue(self, core: BaseCoreAny, key: str) -> DValue:
+        return core.db.dvalue.get(key)
 
 
 class SystemAPIController(Controller):
@@ -96,4 +122,6 @@ class SystemAPIController(Controller):
         core.system_service.clean_logfile()
 
 
-system_router = Router(path="/", route_handlers=[SystemUIController, DLogController, DConfigController, SystemAPIController])
+system_router = Router(
+    path="/", route_handlers=[SystemUIController, DLogController, DConfigController, DValueController, SystemAPIController]
+)

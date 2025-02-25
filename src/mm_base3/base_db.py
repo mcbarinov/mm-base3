@@ -62,10 +62,31 @@ class DLog(MongoModel[ObjectId]):
     }
 
 
+class DValue(MongoModel[str]):
+    value: str
+    updated_at: datetime | None = None
+    created_at: datetime = Field(default_factory=utc_now)
+
+    __collection__: str = "dvalue"
+    __validator__: ClassVar[dict[str, object]] = {
+        "$jsonSchema": {
+            "required": ["value", "updated_at", "created_at"],
+            "additionalProperties": False,
+            "properties": {
+                "_id": {"bsonType": "string"},
+                "value": {"bsonType": "string"},
+                "updated_at": {"bsonType": ["date", "null"]},
+                "created_at": {"bsonType": "date"},
+            },
+        },
+    }
+
+
 class BaseDb(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
     dlog: MongoCollection[ObjectId, DLog]
     dconfig: MongoCollection[str, DConfig]
+    dvalue: MongoCollection[str, DValue]
 
     database: DatabaseAny
 

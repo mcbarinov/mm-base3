@@ -5,7 +5,7 @@ from litestar.params import Body
 
 from mm_base3 import BaseAppConfig
 from mm_base3.base_db import BaseDb
-from mm_base3.services.dconfig_service import DConfigDict
+from mm_base3.dconfig import DConfigDict
 
 FormBody = Body(media_type=RequestEncodingType.URL_ENCODED)
 

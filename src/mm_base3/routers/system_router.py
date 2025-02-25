@@ -2,6 +2,7 @@ from typing import Annotated
 
 from bson import ObjectId
 from litestar import Controller, Router, delete, get, post
+from litestar.plugins.flash import flash
 from litestar.response import Redirect, Template
 from pymongo.results import DeleteResult
 
@@ -11,7 +12,7 @@ from mm_base3.base_db import DConfigType, DLog, DValue
 from mm_base3.dconfig import DConfigStorage
 from mm_base3.dvalue import DValueStorage
 from mm_base3.system_service import Stats
-from mm_base3.types_ import FormBody
+from mm_base3.types_ import FormBody, RequestAny
 
 
 class SystemUIController(Controller):
@@ -48,23 +49,26 @@ class SystemUIController(Controller):
         return render_html("dconfig_multiline.j2", dconfig=dconfig, key=key)
 
     @post("dconfig")
-    def update_dconfig(self, core: BaseCoreAny, data: Annotated[dict[str, str], FormBody]) -> Redirect:
+    def update_dconfig(self, core: BaseCoreAny, data: Annotated[dict[str, str], FormBody], request: RequestAny) -> Redirect:
         """Update dconfig values  that are neither multiline nor hidden"""
         update_data = {
             x: data.get(x, "") for x in core.dconfig.get_non_hidden_keys() if core.dconfig.get_type(x) != DConfigType.MULTILINE
         }
         DConfigStorage.update(update_data)
-        return Redirect(path="/system/dconfig")  # TODO: flash message
+        flash(request, "dconfig updated successfully", "success")
+        return Redirect(path="/system/dconfig")
 
     @post("dconfig/multiline/{key:str}")
-    def update_dconfig_multiline(self, key: str, data: Annotated[dict[str, str], FormBody]) -> Redirect:
+    def update_dconfig_multiline(self, key: str, data: Annotated[dict[str, str], FormBody], request: RequestAny) -> Redirect:
         DConfigStorage.update_multiline(key, data["value"])
-        return Redirect(path="/system/dconfig")  # TODO: flash message
+        flash(request, "dconfig updated successfully", "success")
+        return Redirect(path="/system/dconfig")
 
     @post("dconfig/toml")
-    def update_dconfig_from_toml(self, data: Annotated[dict[str, str], FormBody]) -> Redirect:
+    def update_dconfig_from_toml(self, data: Annotated[dict[str, str], FormBody], request: RequestAny) -> Redirect:
         DConfigStorage.update_from_toml(data["value"])
-        return Redirect(path="/system/dconfig")  # TODO: flash message
+        flash(request, "dconfig updated successfully", "success")
+        return Redirect(path="/system/dconfig")
 
 
 class DLogController(Controller):

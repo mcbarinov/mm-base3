@@ -11,9 +11,26 @@
     :root {
       --pico-font-size: 110%;
     }
+
+    .error-card {
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 1rem;
+      border-radius: 0.25rem;
+      border: 1px solid #f5c6cb;
+    }
+
+    .success-card {
+      background-color: #CBFCE1;
+      color: #721c24;
+      padding: 1rem;
+      border-radius: 0.25rem;
+      border: 1px solid #f5c6cb;
+    }
   </style>
 </head>
 <body class="container">
+
 
 <header>
   <nav>
@@ -35,6 +52,23 @@
     <span>{{ header_info() }}</span>
   {% endif %}
 </header>
+
+{% for flash_message in get_flashes() %}
+  {% if flash_message.category == "error" %}
+    <article class="error-card">
+      <header>Error</header>
+      <p>{{ flash_message.message }}</p>
+    </article>
+  {% else %}
+    <article class="success-card">
+      <p>{{ flash_message.message }}</p>
+    </article>
+  {% endif %}
+
+
+
+{% endfor %}
+
 
 <main>
   {% block content -%}

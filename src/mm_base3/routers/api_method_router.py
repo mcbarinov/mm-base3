@@ -1,12 +1,11 @@
 from typing import Any, Literal
 
-from litestar import Controller, Request, Response, get
+from litestar import Controller, Response, get
 from mm_std import hr
 
 from mm_base3.auth import ACCESS_TOKEN_NAME
 from mm_base3.base_core import BaseCoreAny
-
-type RequestAny = Request[Any, Any, Any]
+from mm_base3.types_ import RequestAny
 
 
 class APIMethodController(Controller):

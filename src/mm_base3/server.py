@@ -7,8 +7,10 @@ from bson import ObjectId
 from litestar import Litestar, MediaType, Request, Response, Router
 from litestar.datastructures import State
 from litestar.middleware import DefineMiddleware
+from litestar.middleware.session.server_side import ServerSideSessionConfig
 from litestar.openapi import OpenAPIConfig
 from litestar.openapi.spec import Tag
+from litestar.plugins.flash import FlashConfig, FlashPlugin
 from litestar.static_files import create_static_files_router
 from litestar.status_codes import HTTP_500_INTERNAL_SERVER_ERROR
 from pymongo.results import DeleteResult, InsertOneResult, UpdateResult
@@ -39,6 +41,9 @@ def init_server(core: BaseCoreAny, custom_jinja: CustomJinja, ui_router: Router,
         return cast(BaseCoreAny, state.get("core"))
 
     auth_mw = DefineMiddleware(AuthMiddleware, exclude="/auth/")
+    template_config = init_jinja(core, custom_jinja)
+    flash_plugin = FlashPlugin(config=FlashConfig(template_config=template_config))
+
     return Litestar(
         route_handlers=[
             create_static_files_router(path="/assets", directories=[ASSETS]),
@@ -50,8 +55,9 @@ def init_server(core: BaseCoreAny, custom_jinja: CustomJinja, ui_router: Router,
         ],
         state=State({"core": core}),
         dependencies={"core": core_dep},
-        middleware=[auth_mw],
-        template_config=init_jinja(core, custom_jinja),
+        plugins=[flash_plugin],
+        middleware=[ServerSideSessionConfig().middleware, auth_mw],
+        template_config=template_config,
         type_encoders=TYPE_ENCODERS,
         on_shutdown=[lambda: core.shutdown()],
         exception_handlers={Exception: all_exceptions_handler},

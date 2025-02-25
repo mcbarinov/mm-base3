@@ -6,7 +6,7 @@ requires-python = ">=3.12"
 dependencies = [
     "litestar[standard]>=2.14.0",
     "mm-mongo>=0.2.2",
-    "pydantic-settings>=2.7.1",
+    "pydantic-settings>=2.8.0",
 ]
 
 [build-system]
@@ -17,12 +17,11 @@ build-backend = "hatchling.build"
 dev-dependencies = [
     "pytest~=8.3.4",
     "pytest-xdist~=3.6.1",
-    "pytest-httpserver~=1.1.1",
+    "pytest-httpserver~=1.1.2",
     "ruff~=0.9.7",
     "pip-audit~=2.8.0",
     "bandit~=1.8.3",
     "mypy~=1.15.0",
-    "types-PyYAML~=6.0.12.20241230",
     "types-toml>=0.10.8.20240310",
 ]
 
@@ -33,12 +32,6 @@ warn_no_return = false
 strict = true
 plugins = "pydantic.mypy"
 exclude = ["^tests/", "^cookiecutter", "^demo/"]
-[[tool.mypy.overrides]]
-module = ["wtforms.*", "telebot.types.*", "telebot.util.*"]
-ignore_missing_imports = true
-[[tool.mypy.overrides]]
-module = ["mm_b1.routers.*", "app.routers.*"]
-disable_error_code = ["no-untyped-def"]
 
 [tool.ruff]
 line-length = 130

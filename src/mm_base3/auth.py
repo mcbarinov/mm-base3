@@ -6,7 +6,7 @@ from litestar.middleware import AbstractAuthenticationMiddleware, Authentication
 
 from mm_base3.base_core import BaseCoreAny
 
-ACCESS_TOKEN_NAME = "access-token"  # noqa: S105
+ACCESS_TOKEN_NAME = "access-token"  # nosec: B105 # noqa: S105
 
 
 class AuthMiddleware(AbstractAuthenticationMiddleware):

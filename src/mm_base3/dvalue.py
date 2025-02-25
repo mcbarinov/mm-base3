@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import base64
 import itertools
-import pickle
+import pickle  # nosec: B403
 from typing import Any, ClassVar, cast, overload
 
 import toml

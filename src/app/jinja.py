@@ -11,17 +11,17 @@ def data_status(status: DataStatus) -> Markup:
         color = "green"
     elif status == DataStatus.ERROR:
         color = "red"
-    return Markup(f"<span style='color: {color};'>{status.value}</span>")
+    return Markup(f"<span style='color: {color};'>{status.value}</span>")  # nosec: B704
 
 
 def header_info(_core: Core) -> Markup:
     info = "<span style='color: red'>bbb</span>"
-    return Markup(info)
+    return Markup(info)  # nosec: B704
 
 
 def footer_info(_core: Core) -> Markup:
     info = ""
-    return Markup(info)
+    return Markup(info)  # nosec: B704
 
 
 custom_jinja = CustomJinja(

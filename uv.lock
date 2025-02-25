@@ -550,7 +550,7 @@ wheels = [
 
 [[package]]
 name = "mm-base3"
-version = "0.0.1"
+version = "0.0.2"
 source = { editable = "." }
 dependencies = [
     { name = "litestar", extra = ["standard"] },

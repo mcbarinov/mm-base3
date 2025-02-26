@@ -1,11 +1,11 @@
 [project]
 name = "mm-base3"
-version = "0.0.6"
+version = "0.0.7"
 description = ""
 requires-python = ">=3.12"
 dependencies = [
-    "litestar[standard]>=2.14.0",
-    "mm-mongo>=0.2.2",
+    "litestar[standard]>=2.15.0",
+    "mm-mongo>=0.2.3",
     "pydantic-settings>=2.8.0",
 ]
 

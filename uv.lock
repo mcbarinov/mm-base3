@@ -450,7 +450,7 @@ wheels = [
 
 [[package]]
 name = "litestar"
-version = "2.14.0"
+version = "2.15.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -466,9 +466,9 @@ dependencies = [
     { name = "rich-click" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d7/8f/e91ea2b8518bf909c51c9b286173feebe3c9b03c389854b82345c92e1c70/litestar-2.14.0.tar.gz", hash = "sha256:ac154e46fb74ec4bbce7660f6f437adb7d413ea9bad52cd7954dc1d25e243716", size = 394285 }
+sdist = { url = "https://files.pythonhosted.org/packages/54/89/95d146d505061f479cd52bb09b8f0f1b4901d4d308a598e00cab29be045d/litestar-2.15.0.tar.gz", hash = "sha256:81291b6f791775267740aa0587a41b082ae1520907bc7125ff41c39c4360e8b8", size = 397205 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/07/e7/c5b5ccb7a7d61733320a3c228faed338542e667a547d9f0cf3d5512b0c78/litestar-2.14.0-py3-none-any.whl", hash = "sha256:5602065e263e453ee742aafe38681ba4aa9f5e3df21326cfd2082d1a766ca4fb", size = 567643 },
+    { url = "https://files.pythonhosted.org/packages/aa/8c/01add4611e68b05b3aa23054cbb6e368dfec8ae12f88c7d0d1febdb85701/litestar-2.15.0-py3-none-any.whl", hash = "sha256:e36851a0a076fa38569dee8eb21b483887fc98618b631a0eb265630f101c29ab", size = 570802 },
 ]
 
 [package.optional-dependencies]
@@ -550,7 +550,7 @@ wheels = [
 
 [[package]]
 name = "mm-base3"
-version = "0.0.6"
+version = "0.0.7"
 source = { editable = "." }
 dependencies = [
     { name = "litestar", extra = ["standard"] },
@@ -572,8 +572,8 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "litestar", extras = ["standard"], specifier = ">=2.14.0" },
-    { name = "mm-mongo", specifier = ">=0.2.2" },
+    { name = "litestar", extras = ["standard"], specifier = ">=2.15.0" },
+    { name = "mm-mongo", specifier = ">=0.2.3" },
     { name = "pydantic-settings", specifier = ">=2.8.0" },
 ]
 
@@ -591,14 +591,14 @@ dev = [
 
 [[package]]
 name = "mm-mongo"
-version = "0.2.2"
+version = "0.2.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "mm-std" },
     { name = "pymongo" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/fd/69/6dd39e38bd4614e389fa91f5a72ae00f1cef49d03e090fe63a2573eeff82/mm_mongo-0.2.2-py3-none-any.whl", hash = "sha256:aa0efd8fbb662eb6420ba9fca96ff69686e64d335371aef85454da31fa51524d", size = 6098 },
+    { url = "https://files.pythonhosted.org/packages/0d/c2/06edfaf2c4bded02d39dd40da4e4e700053277a73f302825a83064384716/mm_mongo-0.2.3-py3-none-any.whl", hash = "sha256:5d9c8740155a4501111ab3c20033e1bcd5477723e8fa9a803b1242f18d050939", size = 6428 },
 ]
 
 [[package]]

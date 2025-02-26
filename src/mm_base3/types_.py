@@ -1,4 +1,4 @@
-from typing import Any, TypeVar
+from typing import Annotated, Any, TypeVar
 
 from litestar import Request
 from litestar.enums import RequestEncodingType
@@ -9,6 +9,8 @@ from mm_base3.base_db import BaseDb
 from mm_base3.dconfig import DConfigDict
 
 FormBody = Body(media_type=RequestEncodingType.URL_ENCODED)
+
+FormData = Annotated[dict[str, str], Body(media_type=RequestEncodingType.URL_ENCODED)]
 
 type RequestAny = Request[Any, Any, Any]
 

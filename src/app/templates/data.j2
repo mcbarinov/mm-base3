@@ -22,6 +22,7 @@
       <th>created_at</th>
       <th>status</th>
       <th>value</th>
+      <th>inc</th>
       <th>actions</th>
     </tr>
     </thead>
@@ -31,6 +32,26 @@
         <td>{{ d.created_at | dt }}</td>
         <td>{{ d.status | data_status }}</td>
         <td>{{ d.value | n }}</td>
+        <td>
+          <button data-target="modal-inc-{{ d.id }}" onclick="toggleModal(event)">inc</button>
+          <dialog id="modal-inc-{{ d.id }}">
+            <article>
+              <header>
+                <button
+                  aria-label="Close"
+                  rel="prev"
+                  data-target="modal-inc-{{ d.id }}"
+                  onclick="toggleModal(event)"
+                ></button>
+                <h3>Confirm your action!</h3>
+              </header>
+              <form method="post" action="/inc-data/{{ d.id }}">
+                <input type="number" name="value" value="1">
+                <input type="submit" value="inc">
+              </form>
+            </article>
+          </dialog>
+        </td>
         <td>
           <details class="dropdown">
             <summary>actions</summary>

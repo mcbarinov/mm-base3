@@ -5,5 +5,6 @@ A base for web applications on Python
 - mm-mongo (based on pymongo)
 
 
-js&css libs:
-- Pico CSS
+JavaScript and CSS libraries:
+- https://github.com/picocss/pico
+- https://github.com/tofsjonas/sortable

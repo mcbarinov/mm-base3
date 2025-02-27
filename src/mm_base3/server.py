@@ -13,6 +13,7 @@ from litestar.openapi.spec import Tag
 from litestar.plugins.flash import FlashConfig, FlashPlugin
 from litestar.static_files import create_static_files_router
 from litestar.status_codes import HTTP_500_INTERNAL_SERVER_ERROR
+from mm_std import Err, Ok, Result
 from pymongo.results import DeleteResult, InsertOneResult, UpdateResult
 
 from mm_base3 import CustomJinja
@@ -29,6 +30,9 @@ TYPE_ENCODERS = {
     InsertOneResult: lambda x: {"inserted_id": x.inserted_id, "acknowledged": x.acknowledged},
     UpdateResult: lambda x: x.raw_result,
     ObjectId: lambda x: str(x),
+    Result: lambda x: {"ok": x.ok, "err": x.err, "data": x.data},
+    Ok: lambda x: {"ok": x.ok, "data": x.data},
+    Err: lambda x: {"err": x.err, "data": x.data},
 }
 
 ASSETS = Path(__file__).parent.absolute() / "assets"

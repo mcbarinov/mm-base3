@@ -550,7 +550,7 @@ wheels = [
 
 [[package]]
 name = "mm-base3"
-version = "0.0.7"
+version = "0.0.8"
 source = { editable = "." }
 dependencies = [
     { name = "litestar", extra = ["standard"] },
@@ -573,7 +573,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "litestar", extras = ["standard"], specifier = ">=2.15.0" },
-    { name = "mm-mongo", specifier = ">=0.2.3" },
+    { name = "mm-mongo", specifier = ">=0.2.4" },
     { name = "pydantic-settings", specifier = ">=2.8.0" },
 ]
 
@@ -591,19 +591,19 @@ dev = [
 
 [[package]]
 name = "mm-mongo"
-version = "0.2.3"
+version = "0.2.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "mm-std" },
     { name = "pymongo" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0d/c2/06edfaf2c4bded02d39dd40da4e4e700053277a73f302825a83064384716/mm_mongo-0.2.3-py3-none-any.whl", hash = "sha256:5d9c8740155a4501111ab3c20033e1bcd5477723e8fa9a803b1242f18d050939", size = 6428 },
+    { url = "https://files.pythonhosted.org/packages/5c/97/9736e94aef789a8751f78827b5f6c9b47f58beeaf9c010fc6c7891df9d2f/mm_mongo-0.2.4-py3-none-any.whl", hash = "sha256:886b7a3889bc05514848116f0e142357e9ddbe5ae0fe69453308423cd0d98f65", size = 6428 },
 ]
 
 [[package]]
 name = "mm-std"
-version = "0.3.2"
+version = "0.3.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cryptography" },
@@ -615,7 +615,7 @@ dependencies = [
     { name = "rich" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c0/9a/19f88e047426a52de2f8262d654ca8f20b6b9f15085db7dca6850b7d89d9/mm_std-0.3.2-py3-none-any.whl", hash = "sha256:bf479b1810c887b41aa8b4ad3b6d59d2002703a26b04499516af8e2d94351c86", size = 14709 },
+    { url = "https://files.pythonhosted.org/packages/8c/e3/073250114cac145c3f6e123abd7391135e2f816c655f4be64779f6840da6/mm_std-0.3.3-py3-none-any.whl", hash = "sha256:a6dec762445a1be4cc6ca0840f9c11362fd605824eb1f56f0899392a2b9cd533", size = 14751 },
 ]
 
 [[package]]

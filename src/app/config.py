@@ -8,7 +8,7 @@ from mm_base3 import DC, DV, BaseAppConfig, DConfigDict, DValueDict
 
 class AppConfig(BaseAppConfig):
     tags: list[str] = Field(["data"])
-    main_menu: dict[str, str] = Field({"/data": "data"})
+    main_menu: dict[str, str] = Field({"/data": "data", "/test": "test"})
     telegram_bot_help: str = """
 /first_command - bla bla1
 /second_command - bla bla2

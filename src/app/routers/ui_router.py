@@ -21,7 +21,7 @@ class PagesController(Controller):
 
     @get("/test")
     def test(self) -> Template:
-        return render_html("test.j2")
+        return render_html("test.j2", zero=0)
 
 
 class ActionsController(Controller):

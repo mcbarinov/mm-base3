@@ -1,4 +1,5 @@
 import json
+from collections.abc import Sequence
 from datetime import datetime
 from decimal import Decimal
 
@@ -15,7 +16,11 @@ def timestamp(value: datetime | int | None, format_: str = "%Y-%m-%d %H:%M:%S") 
 
 
 def empty(value: object) -> object:
-    return value if value else ""
+    if value is None:
+        return ""
+    if isinstance(value, Sequence) and len(value) == 0:
+        return ""
+    return value
 
 
 def yes_no(
@@ -43,7 +48,7 @@ def nformat(
     prefix: str = "",
     suffix: str = "",
     separator: str = "",
-    hide_zero: bool = True,
+    hide_zero: bool = False,
     digits: int = 2,
 ) -> str:
     if value is None or value == "":

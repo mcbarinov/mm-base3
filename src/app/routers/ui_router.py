@@ -11,15 +11,15 @@ class PagesController(Controller):
     path = "/"
     tags = ["ui"]
 
-    @get()
+    @get(sync_to_thread=False)
     def index(self) -> Template:
         return render_html("index.j2")
 
-    @get("/data")
+    @get("/data", sync_to_thread=True)
     def data(self, core: Core) -> Template:
         return render_html("data.j2", data_list=core.db.data.find({}))
 
-    @get("/test")
+    @get("/test", sync_to_thread=False)
     def test(self) -> Template:
         return render_html("test.j2", zero=0)
 
@@ -27,18 +27,18 @@ class PagesController(Controller):
 class ActionsController(Controller):
     path = "/"
 
-    @post("/inc-data/{id:str}")
+    @post("/inc-data/{id:str}", sync_to_thread=True)
     def inc_data(self, core: Core, id: str, data: FormData, request: RequestAny) -> Redirect:
         value = int(data["value"])
         core.db.data.update_one({"_id": id}, {"$inc": {"value": value}})
         flash(request, f"Data {id} incremented by {value}", "success")
         return Redirect("/data")
 
-    @get("/test-result-ok")
+    @get("/test-result-ok", sync_to_thread=False)
     def test_result_ok(self) -> Result[str]:
         return Ok("it works")
 
-    @get("/test-result-err")
+    @get("/test-result-err", sync_to_thread=False)
     def test_result_err(self) -> Result[str]:
         return Err("bla bla", data=["ssss", 123])
 

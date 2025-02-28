@@ -20,11 +20,11 @@ class AuthController(Controller):
     tags = ["auth"]
     include_in_schema = False
 
-    @get("/login")
+    @get("/login", sync_to_thread=False)
     def login_page(self) -> Template:
         return render_html("login.j2")
 
-    @post("/login")
+    @post("/login", sync_to_thread=False)
     def login(self, core: BaseCoreAny, data: Annotated[LoginForm, FormBody]) -> Redirect:
         cookie = Cookie(
             key=ACCESS_TOKEN_NAME,
@@ -35,6 +35,6 @@ class AuthController(Controller):
         )
         return Redirect(path="/", cookies=[cookie])
 
-    @get("/logout")
+    @get("/logout", sync_to_thread=False)
     def logout(self) -> Redirect:
         return Redirect(path="/auth/login", cookies=[Cookie(key=ACCESS_TOKEN_NAME, value="")])

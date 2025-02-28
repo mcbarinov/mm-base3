@@ -10,7 +10,7 @@ class Core(BaseCore[AppConfig, DConfigSettings, DValueSettings, Db]):
 
         self.data_service = DataService(self.base_service_params)
 
-        self.scheduler.add_job(self.data_service.generate_data, 60, run_immediately=True)
+        self.scheduler.add_job(self.data_service.generate_data, 60, run_immediately=False)
 
     def start(self) -> None:
         pass

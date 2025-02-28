@@ -1,4 +1,4 @@
-from mm_base3.server.jinja import empty
+from mm_base3.server.jinja.filters import empty
 
 
 def test_empty():

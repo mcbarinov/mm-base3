@@ -41,7 +41,7 @@ ASSETS = Path(__file__).parent.absolute() / "assets"
 def init_server(core: BaseCoreAny, custom_jinja: CustomJinja, ui_router: Router, api_router: Router) -> Litestar:
     logging.getLogger("httpx").setLevel(logging.WARNING)
 
-    def core_dep(state: State) -> BaseCoreAny:
+    async def core_dep(state: State) -> BaseCoreAny:
         return cast(BaseCoreAny, state.get("core"))
 
     auth_mw = DefineMiddleware(AuthMiddleware, exclude="/auth/")

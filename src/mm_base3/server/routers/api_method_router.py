@@ -3,8 +3,8 @@ from typing import Any, Literal
 from litestar import Controller, Response, get
 from mm_std import hr
 
-from mm_base3.auth import ACCESS_TOKEN_NAME
 from mm_base3.base_core import BaseCoreAny
+from mm_base3.server.auth import ACCESS_TOKEN_NAME
 from mm_base3.types_ import RequestAny
 
 

@@ -6,8 +6,8 @@ from litestar.response import Redirect, Template
 from pydantic import BaseModel
 
 from mm_base3 import render_html
-from mm_base3.auth import ACCESS_TOKEN_NAME
 from mm_base3.base_core import BaseCoreAny
+from mm_base3.server.auth import ACCESS_TOKEN_NAME
 from mm_base3.types_ import FormBody
 
 

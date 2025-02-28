@@ -5,7 +5,7 @@ from markupsafe import Markup
 from mm_std import utc_now
 
 from mm_base3.base_core import BaseCoreAny
-from mm_base3.jinja import CustomJinja
+from mm_base3.server.jinja import CustomJinja
 
 
 def raise_(msg: str) -> NoReturn:

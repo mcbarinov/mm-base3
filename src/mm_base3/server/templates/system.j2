@@ -48,6 +48,42 @@
           </tr>
         {% endfor %}
       </table>
+      <br>
+
+      <table>
+        <caption>scheduler jobs / {{ stats.scheduler_jobs | length }}</caption>
+        <tr>
+          <th>func</th>
+          <th>interval</th>
+          <th>last_at</th>
+          <th>is_running</th>
+        </tr>
+        {% for j in stats.scheduler_jobs %}
+          <tr>
+            <td>{{ j.func.__qualname__ }}</td>
+            <td>{{ j.interval }}</td>
+            <td>{{ j.last_at | dt }}</td>
+            <td>{{ j.is_running | yes_no }}</td>
+          </tr>
+        {% endfor %}
+      </table>
+      <br>
+
+      <table>
+        <caption>threads / {{ stats.threads | length }}</caption>
+        <tr>
+          <th>name</th>
+          <th>daemon</th>
+          <th>func</th>
+        </tr>
+        {% for t in stats.threads %}
+          <tr>
+            <td>{{ t.name }}</td>
+            <td>{{ t.daemon | yes_no }}</td>
+            <td>{{ t.func_name | empty }}</td>
+          </tr>
+        {% endfor %}
+      </table>
     </section>
   </div>
 

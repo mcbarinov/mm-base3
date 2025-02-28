@@ -25,17 +25,16 @@ class BaseCore[APP_CONFIG_T: BaseAppConfig, DCONFIG_T: DConfigDict, DVALUE_T: DV
     ) -> None:
         self.app_config = app_config_settings()
         self.logger = init_logger("app", file_path=f"{self.app_config.data_dir}/app.log", level=self.app_config.logger_level)
+        self.scheduler = Scheduler(self.logger, debug=debug_scheduler)
         conn = MongoConnection(self.app_config.database_url)
         self.mongo_client = conn.client
         self.database = conn.database
         self.db: DB_T = db_settings.init_collections(self.database)
 
-        self.system_service: SystemService = SystemService(self.app_config, self.logger, self.db)
+        self.system_service: SystemService = SystemService(self.app_config, self.logger, self.db, self.scheduler)
 
         self.dconfig: DCONFIG_T = cast(DCONFIG_T, DConfigStorage.init_storage(self.db.dconfig, dconfig_settings, self.dlog))
         self.dvalue: DVALUE_T = cast(DVALUE_T, DValueStorage.init_storage(self.db.dvalue, dvalue_settings))
-
-        self.scheduler = Scheduler(self.logger, debug=debug_scheduler)
 
     def startup(self) -> None:
         self.scheduler.start()

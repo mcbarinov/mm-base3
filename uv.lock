@@ -550,10 +550,11 @@ wheels = [
 
 [[package]]
 name = "mm-base3"
-version = "0.0.12"
+version = "0.0.13"
 source = { editable = "." }
 dependencies = [
     { name = "litestar", extra = ["standard"] },
+    { name = "mm-jinja" },
     { name = "mm-mongo" },
     { name = "pydantic-settings" },
 ]
@@ -573,6 +574,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "litestar", extras = ["standard"], specifier = ">=2.15.1" },
+    { name = "mm-jinja", specifier = "==0.0.3" },
     { name = "mm-mongo", specifier = ">=0.2.4" },
     { name = "pydantic-settings", specifier = ">=2.8.0" },
 ]
@@ -587,6 +589,17 @@ dev = [
     { name = "pytest-xdist", specifier = "~=3.6.1" },
     { name = "ruff", specifier = "~=0.9.9" },
     { name = "types-toml", specifier = ">=0.10.8.20240310" },
+]
+
+[[package]]
+name = "mm-jinja"
+version = "0.0.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jinja2" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/36/39/ead30a471e5cbe0cbc18b63c1177e311aa773f3ac3e6bd6f25e6f5e84619/mm_jinja-0.0.3-py3-none-any.whl", hash = "sha256:89af60c99c901a4fcc19a2ba4c3b61aa5f5f037700f4b5b9c1a2cd37a0948c46", size = 2840 },
 ]
 
 [[package]]

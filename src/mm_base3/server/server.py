@@ -20,7 +20,7 @@ from mm_base3 import CustomJinja
 from mm_base3.base_core import BaseCoreAny
 from mm_base3.errors import UserError
 from mm_base3.server.auth import AuthMiddleware
-from mm_base3.server.jinja.jinja import init_jinja
+from mm_base3.server.jinja import init_jinja
 from mm_base3.server.routers.api_method_router import APIMethodController
 from mm_base3.server.routers.auth_router import AuthController
 from mm_base3.server.routers.system_router import system_router

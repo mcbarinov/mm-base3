@@ -36,8 +36,6 @@
 </head>
 <body class="container">
 
-
-
 <header>
   <nav>
     <ul>
@@ -70,9 +68,6 @@
       <p>{{ flash_message.message }}</p>
     </article>
   {% endif %}
-
-
-
 {% endfor %}
 
 
@@ -83,7 +78,7 @@
 
 <footer>
   <hr>
-  app: v{{ app_config.app_version }} / mm_base3: v{{ app_config.mm_base3_version }} / server time: {{ now() | dt }}
+  app: v{{ app_config.app_version }} / mm_base3: v{{ app_config.mm_base3_version }} / server time: {{ utc_now() | dt }}
 </footer>
 
 </body>

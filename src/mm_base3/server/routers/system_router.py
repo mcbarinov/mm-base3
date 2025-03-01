@@ -6,11 +6,11 @@ from litestar.plugins.flash import flash
 from litestar.response import Redirect, Template
 from pymongo.results import DeleteResult
 
-from mm_base3 import render_html
 from mm_base3.base_core import BaseCoreAny
 from mm_base3.base_db import DConfigType, DLog, DValue
 from mm_base3.dconfig import DConfigStorage
 from mm_base3.dvalue import DValueStorage
+from mm_base3.server.utils import render_html
 from mm_base3.system_service import Stats
 from mm_base3.types_ import FormBody, RequestAny
 

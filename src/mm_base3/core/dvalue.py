@@ -9,9 +9,9 @@ import toml
 from mm_mongo import MongoCollection
 from mm_std import synchronized, utc_now
 
-from mm_base3.base_db import DValue
+from mm_base3.core.base_db import DValue
+from mm_base3.core.utils import get_registered_public_attributes
 from mm_base3.errors import UnregisteredDValueError
-from mm_base3.utils import get_registered_public_attributes
 
 
 class DV[T]:
@@ -81,7 +81,7 @@ class DValueStorage:
 
     @classmethod
     @synchronized
-    def init_storage(cls, collection: MongoCollection[str, DValue], dvalue_settings: type[DValueDict]) -> DValueDict:
+    def init_storage(cls, collection: MongoCollection[str, DValue], dvalue_settings: DValueDict) -> DValueDict:
         cls.collection = collection
         persistent_keys = []
 

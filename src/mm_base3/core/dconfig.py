@@ -10,9 +10,9 @@ import toml
 from mm_mongo import MongoCollection
 from mm_std import Err, Ok, Result, synchronized, utc_now
 
-from mm_base3.base_db import DConfig, DConfigType
+from mm_base3.core.base_db import DConfig, DConfigType
+from mm_base3.core.utils import get_registered_public_attributes
 from mm_base3.errors import UnregisteredDConfigError
-from mm_base3.utils import get_registered_public_attributes
 
 
 class DC[T: (str, bool, int, float, Decimal)]:
@@ -84,9 +84,10 @@ class DConfigStorage:
 
     @classmethod
     @synchronized
-    def init_storage(
-        cls, collection: MongoCollection[str, DConfig], dconfig_settings: type[DConfigDict], dlog: Callable[[str, object], None]
-    ) -> DConfigDict:
+    def init_storage[DCONFIG: DConfigDict](
+        cls, collection: MongoCollection[str, DConfig], dconfig_settings: DCONFIG, dlog: Callable[[str, object], None]
+    ) -> DCONFIG:
+        cls.storage = type(dconfig_settings)()
         cls.collection = collection
         cls.dlog = dlog
 

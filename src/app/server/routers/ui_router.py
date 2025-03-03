@@ -3,7 +3,7 @@ from litestar.plugins.flash import flash
 from litestar.response import Redirect, Template
 from mm_std import Err, Ok, Result
 
-from app.core import Core
+from app.core.core import Core
 from mm_base3 import FormData, RequestAny, render_html
 
 

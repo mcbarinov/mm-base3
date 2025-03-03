@@ -10,7 +10,7 @@ from litestar.template import TemplateConfig
 from markupsafe import Markup
 from mm_mongo import json_dumps
 
-from mm_base3.base_core import BaseCoreAny
+from mm_base3.core.base_core import BaseCoreAny
 
 
 def system_log_data_truncate(data: object) -> str:
@@ -32,7 +32,7 @@ class CustomJinja:
 
 
 def init_jinja(core: BaseCoreAny, custom_jinja: CustomJinja) -> TemplateConfig[JinjaTemplateEngine]:
-    loader = ChoiceLoader([PackageLoader("mm_base3.server"), PackageLoader("app")])
+    loader = ChoiceLoader([PackageLoader("mm_base3.server"), PackageLoader("app.server")])
 
     header_info = custom_jinja.header_info if custom_jinja.header_info else lambda _: Markup("")
     footer_info = custom_jinja.footer_info if custom_jinja.footer_info else lambda _: Markup("")

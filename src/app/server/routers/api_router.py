@@ -3,8 +3,8 @@ from litestar import Controller, Router, delete, get, post
 from mm_mongo import mongo_query
 from pymongo.results import DeleteResult, InsertOneResult, UpdateResult
 
-from app.core import Core
-from app.db import Data, DataStatus
+from app.core.core import Core
+from app.core.db import Data, DataStatus
 
 
 class DataController(Controller):
@@ -17,7 +17,7 @@ class DataController(Controller):
 
     @get("/exception", sync_to_thread=True)
     def raise_exception(self, core: Core) -> None:
-        core.dlog("sdsd", core.dvalue.tmp3)
+        core.dlog("123", core.dvalue.tmp3)
         raise ValueError("test exception")
 
     @post("/generate", sync_to_thread=True)

@@ -34,6 +34,7 @@ strict = true
 plugins = "pydantic.mypy"
 exclude = ["^tests/", "^cookiecutter", "^demo/"]
 
+
 [tool.ruff]
 line-length = 130
 target-version = "py313"
@@ -63,6 +64,7 @@ ignore = [
     "RET503", # flake8-return: implicit-return
     "RUF012", # ruff: mutable-class-default
     "COM812", # it's used in ruff formatter
+    "T201", # REMOVE IT!
 ]
 [tool.ruff.lint.flake8-builtins]
 builtins-ignorelist = ["id"]

@@ -17,7 +17,7 @@ from mm_std import Err, Ok, Result
 from pymongo.results import DeleteResult, InsertOneResult, UpdateResult
 
 from mm_base3 import CustomJinja
-from mm_base3.base_core import BaseCoreAny
+from mm_base3.core.base_core import BaseCoreAny
 from mm_base3.errors import UserError
 from mm_base3.server.auth import AuthMiddleware
 from mm_base3.server.jinja import init_jinja

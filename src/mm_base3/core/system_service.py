@@ -5,8 +5,8 @@ import pydash
 from mm_std import Scheduler
 from pydantic import BaseModel
 
-from mm_base3.base_db import BaseDb
 from mm_base3.config import BaseAppConfig
+from mm_base3.core.base_db import BaseDb
 
 
 class Stats(BaseModel):

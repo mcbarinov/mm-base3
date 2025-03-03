@@ -4,7 +4,7 @@ from litestar.connection import ASGIConnection
 from litestar.exceptions import NotAuthorizedException
 from litestar.middleware import AbstractAuthenticationMiddleware, AuthenticationResult
 
-from mm_base3.base_core import BaseCoreAny
+from mm_base3.core.base_core import BaseCoreAny
 
 ACCESS_TOKEN_NAME = "access-token"  # nosec: B105 # noqa: S105
 

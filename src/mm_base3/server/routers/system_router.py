@@ -107,8 +107,8 @@ class DValueController(Controller):
         return DValueStorage.export_field_as_toml(key)
 
     @get("{key:str}/value", sync_to_thread=True)
-    def get_value(self, core: BaseCoreAny, key: str) -> object:
-        return core.dvalue.get(key)
+    def get_value(self, key: str) -> object:
+        return DValueStorage.get_value(key)
 
     @get("{key:str}", sync_to_thread=True)
     def get_dvalue(self, core: BaseCoreAny, key: str) -> DValue:

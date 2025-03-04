@@ -3,17 +3,14 @@ from decimal import Decimal
 from mm_std import utc_now
 from pydantic import Field
 
-from mm_base3 import DC, DV, BaseAppConfig, DValueDict
+from mm_base3 import DC, DV, BaseAppConfig
 from mm_base3.core.dconfig import DConfigModel
+from mm_base3.core.dvalue import DValueModel
 
 
 class AppConfig(BaseAppConfig):
     tags: list[str] = Field(["data"])
     main_menu: dict[str, str] = Field({"/data": "data", "/test": "test"})
-    telegram_bot_help: str = """
-/first_command - bla bla1
-/second_command - bla bla2
-"""
 
 
 class DConfigSettings(DConfigModel):
@@ -26,7 +23,7 @@ class DConfigSettings(DConfigModel):
     long_cfg_1 = DC("many lines\n" * 5)
 
 
-class DValueSettings(DValueDict):
+class DValueSettings(DValueModel):
     tmp1 = DV("bla")
     tmp2 = DV("bla")
     processed_block = DV(111, "bla bla about processed_block")

@@ -16,8 +16,7 @@ class DataController(Controller):
         return core.db.data.find(mongo_query(status=status), "-created_at", limit)
 
     @get("/exception", sync_to_thread=True)
-    def raise_exception(self, core: Core) -> None:
-        core.dlog("123", core.dvalue.tmp3)
+    def raise_exception(self) -> None:
         raise ValueError("test exception")
 
     @post("/generate", sync_to_thread=True)

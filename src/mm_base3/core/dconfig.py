@@ -52,25 +52,6 @@ class DConfigDict(dict[str, object]):
 
         return self.get(item, None)
 
-    # def get_or_none(self, key: str) -> object | None:
-    #     try:
-    #         return self.get(key)
-    #     except UnregisteredDConfigError:
-    #         return None
-    #
-
-    # @classmethod
-    # def get_attrs(cls) -> list[DC[Any]]:
-    #     attrs: list[DC[Any]] = []
-    #     keys = get_registered_public_attributes(cls)
-    #     for key in keys:
-    #         field = getattr(cls, key)
-    #         if isinstance(field, DC):
-    #             attrs.append(field)
-    #     attrs.sort(key=lambda x: x.order)
-    #
-    #     return attrs
-
 
 class DConfigStorage:
     storage = DConfigDict()

@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass
 from logging import Logger
-from typing import Generic, TypeVar, cast
+from typing import Generic, TypeVar
 
 from bson import ObjectId
 from mm_mongo import MongoConnection
@@ -14,17 +14,17 @@ from mm_std import Scheduler, init_logger
 from mm_base3.config import BaseAppConfig
 from mm_base3.core.base_db import BaseDb, DLog
 from mm_base3.core.dconfig import DConfigModel, DConfigStorage
-from mm_base3.core.dvalue import DValueDict, DValueStorage
+from mm_base3.core.dvalue import DValueModel, DValueStorage
 from mm_base3.core.system_service import SystemService
 
 APP_CONFIG_co = TypeVar("APP_CONFIG_co", bound=BaseAppConfig, covariant=True)
 DCONFIG_co = TypeVar("DCONFIG_co", bound=DConfigModel, covariant=True)
-DVALUE_co = TypeVar("DVALUE_co", bound=DValueDict, covariant=True)
+DVALUE_co = TypeVar("DVALUE_co", bound=DValueModel, covariant=True)
 DB_co = TypeVar("DB_co", bound=BaseDb, covariant=True)
 
 APP_CONFIG = TypeVar("APP_CONFIG", bound=BaseAppConfig)
 DCONFIG = TypeVar("DCONFIG", bound=DConfigModel)
-DVALUE = TypeVar("DVALUE", bound=DValueDict)
+DVALUE = TypeVar("DVALUE", bound=DValueModel)
 DB = TypeVar("DB", bound=BaseDb)
 
 
@@ -33,7 +33,7 @@ class BaseCore(Generic[APP_CONFIG_co, DCONFIG_co, DVALUE_co, DB_co], ABC):
         self,
         app_config_settings: APP_CONFIG_co,
         dconfig_settings: type[DCONFIG_co],
-        dvalue_settings: DVALUE_co,
+        dvalue_settings: type[DVALUE_co],
         db_settings: type[DB_co],
         debug_scheduler: bool = False,
     ) -> None:
@@ -47,8 +47,8 @@ class BaseCore(Generic[APP_CONFIG_co, DCONFIG_co, DVALUE_co, DB_co], ABC):
 
         self.system_service: SystemService = SystemService(self.app_config, self.logger, self.db, self.scheduler)
 
-        self.dconfig = DConfigStorage.init_storage(self.db.dconfig, dconfig_settings, self.dlog)
-        self.dvalue: DVALUE_co = cast(DVALUE_co, DValueStorage.init_storage(self.db.dvalue, dvalue_settings))
+        self.dconfig: DCONFIG_co = DConfigStorage.init_storage(self.db.dconfig, dconfig_settings, self.dlog)
+        self.dvalue: DVALUE_co = DValueStorage.init_storage(self.db.dvalue, dvalue_settings)
 
     def startup(self) -> None:
         self.scheduler.start()
@@ -91,7 +91,7 @@ class BaseCore(Generic[APP_CONFIG_co, DCONFIG_co, DVALUE_co, DB_co], ABC):
         pass
 
 
-type BaseCoreAny = BaseCore[BaseAppConfig, DConfigModel, DValueDict, BaseDb]
+type BaseCoreAny = BaseCore[BaseAppConfig, DConfigModel, DValueModel, BaseDb]
 
 
 @dataclass

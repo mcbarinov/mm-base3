@@ -41,6 +41,10 @@ class DV[T]:
         self.key = name
 
 
+class DValueModel:
+    pass
+
+
 class DValueDict(dict[str, object]):
     persistent: ClassVar[dict[str, bool]] = {}
     descriptions: ClassVar[dict[str, str]] = {}
@@ -64,16 +68,6 @@ class DValueDict(dict[str, object]):
         if persistent:
             DValueStorage.init_persistent_value(key, value)
 
-    @classmethod
-    def get_attrs(cls) -> list[DV[Any]]:
-        attrs: list[DV[Any]] = []
-        for key in get_registered_public_attributes(cls):
-            field = getattr(cls, key)
-            if isinstance(field, DV):
-                attrs.append(field)
-        attrs.sort(key=lambda x: x.order)
-        return attrs
-
 
 class DValueStorage:
     storage = DValueDict()
@@ -81,11 +75,11 @@ class DValueStorage:
 
     @classmethod
     @synchronized
-    def init_storage(cls, collection: MongoCollection[str, DValue], dvalue_settings: DValueDict) -> DValueDict:
+    def init_storage[DVALUE: DValueModel](cls, collection: MongoCollection[str, DValue], dvalue_settings: type[DVALUE]) -> DVALUE:
         cls.collection = collection
         persistent_keys = []
 
-        for attr in dvalue_settings.get_attrs():
+        for attr in get_attrs(dvalue_settings):
             value = attr.value
             # get value from db if exists
             if attr.persistent:
@@ -97,7 +91,7 @@ class DValueStorage:
 
         # remove rows which not in persistent_keys
         collection.delete_many({"_id": {"$nin": persistent_keys}})
-        return cls.storage
+        return cast(DVALUE, cls.storage)
 
     @classmethod
     def init_persistent_value(cls, key: str, value: object) -> None:
@@ -118,6 +112,10 @@ class DValueStorage:
     def export_field_as_toml(cls, key: str) -> str:
         return toml.dumps({key: cls.storage[key]})
 
+    @classmethod
+    def get_value(cls, key: str) -> object:
+        return cls.storage[key]
+
 
 def encode_value(value: object) -> str:
     return base64.b64encode(pickle.dumps(value)).decode("utf-8")
@@ -125,3 +123,15 @@ def encode_value(value: object) -> str:
 
 def decode_value(value: str) -> object:
     return pickle.loads(base64.b64decode(value))  # noqa: S301 # nosec
+
+
+# noinspection DuplicatedCode
+def get_attrs(dconfig_settings: type[DValueModel]) -> list[DV[Any]]:
+    attrs: list[DV[Any]] = []
+    keys = get_registered_public_attributes(dconfig_settings)
+    for key in keys:
+        field = getattr(dconfig_settings, key)
+        if isinstance(field, DV):
+            attrs.append(field)
+    attrs.sort(key=lambda x: x.order)
+    return attrs

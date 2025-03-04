@@ -7,7 +7,7 @@ from mm_mongo import MongoCollection, MongoModel
 from mm_std import utc_now
 from pydantic import Field
 
-from mm_base3.core.base_db import BaseDb
+from mm_base3 import BaseDb
 
 
 @unique

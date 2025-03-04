@@ -2,8 +2,8 @@ from bson import ObjectId
 from litestar import Controller, Router, delete, get
 from pymongo.results import DeleteResult
 
-from mm_base3.core.base_core import BaseCoreAny
-from mm_base3.core.base_db import DLog, DValue
+from mm_base3.core.core import BaseCoreAny
+from mm_base3.core.db import DLog, DValue
 from mm_base3.core.system_service import Stats
 
 

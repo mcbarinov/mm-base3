@@ -1,16 +1,13 @@
 from decimal import Decimal
 
 from mm_std import utc_now
-from pydantic import Field
 
-from mm_base3 import DC, DV, BaseAppConfig
-from mm_base3.core.dconfig import DConfigModel
-from mm_base3.core.dvalue import DValueModel
+from mm_base3 import DC, DV, BaseServerConfig, DConfigModel, DValueModel
 
 
-class AppConfig(BaseAppConfig):
-    tags: list[str] = Field(["data"])
-    main_menu: dict[str, str] = Field({"/data": "data", "/test": "test"})
+class ServerConfig(BaseServerConfig):
+    tags: list[str] = ["data"]
+    main_menu: dict[str, str] = {"/data": "data", "/test": "test"}
 
 
 class DConfigSettings(DConfigModel):

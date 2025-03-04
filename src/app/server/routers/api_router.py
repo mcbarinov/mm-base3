@@ -5,6 +5,7 @@ from pymongo.results import DeleteResult, InsertOneResult, UpdateResult
 
 from app.core.core import Core
 from app.core.db import Data, DataStatus
+from mm_base3 import BaseServerConfig
 
 
 class DataController(Controller):
@@ -34,6 +35,10 @@ class DataController(Controller):
     @delete("/{id:str}", status_code=200, sync_to_thread=True)
     def delete_data(self, core: Core, id: str) -> DeleteResult:
         return core.db.data.delete(ObjectId(id))
+
+    @get("/server-config", sync_to_thread=True)
+    def get_server_config(self, server_config: BaseServerConfig) -> dict[str, object]:
+        return server_config.model_dump()
 
 
 api_router = Router(path="/api", route_handlers=[DataController])

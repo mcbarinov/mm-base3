@@ -8,9 +8,9 @@ from typing import Any, ClassVar, cast, overload
 from mm_mongo import MongoCollection
 from mm_std import synchronized, utc_now
 
-from mm_base3.core.base_db import DValue
+from mm_base3.core.db import DValue
+from mm_base3.core.errors import UnregisteredDValueError
 from mm_base3.core.utils import get_registered_public_attributes
-from mm_base3.errors import UnregisteredDValueError
 
 
 class DV[T]:

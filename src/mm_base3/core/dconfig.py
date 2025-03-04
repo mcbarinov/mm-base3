@@ -8,9 +8,9 @@ from typing import Any, ClassVar, cast, overload
 from mm_mongo import MongoCollection
 from mm_std import Err, Ok, Result, synchronized, utc_now
 
-from mm_base3.core.base_db import DConfig, DConfigType
+from mm_base3.core.db import DConfig, DConfigType
+from mm_base3.core.errors import UnregisteredDConfigError
 from mm_base3.core.utils import get_registered_public_attributes
-from mm_base3.errors import UnregisteredDConfigError
 
 
 class DC[T: (str, bool, int, float, Decimal)]:

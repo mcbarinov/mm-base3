@@ -17,9 +17,11 @@ from mm_std import Err, Ok, Result
 from pymongo.results import DeleteResult, InsertOneResult, UpdateResult
 
 from mm_base3 import CustomJinja
-from mm_base3.core.base_core import BaseCoreAny
-from mm_base3.errors import UserError
+from mm_base3.core.core import BaseCore, DB_co, DCONFIG_co, DVALUE_co
+from mm_base3.core.errors import UserError
+from mm_base3.server import utils
 from mm_base3.server.auth import AuthMiddleware
+from mm_base3.server.config import BaseServerConfig
 from mm_base3.server.jinja import init_jinja
 from mm_base3.server.routers.api_method_router import APIMethodController
 from mm_base3.server.routers.auth_router import AuthController
@@ -39,14 +41,23 @@ TYPE_ENCODERS = {
 ASSETS = Path(__file__).parent.absolute() / "assets"
 
 
-def init_server(core: BaseCoreAny, custom_jinja: CustomJinja, ui_router: Router, api_router: Router) -> Litestar:
+def init_server(
+    core: BaseCore[DCONFIG_co, DVALUE_co, DB_co],
+    server_config: BaseServerConfig,
+    custom_jinja: CustomJinja,
+    ui_router: Router,
+    api_router: Router,
+) -> Litestar:
     logging.getLogger("httpx").setLevel(logging.WARNING)
 
-    async def core_dep(state: State) -> BaseCoreAny:
-        return cast(BaseCoreAny, state.get("core"))
+    async def core_dep(state: State) -> BaseCore[DCONFIG_co, DVALUE_co, DB_co]:
+        return cast(BaseCore[DCONFIG_co, DVALUE_co, DB_co], state.get("core"))
+
+    async def server_config_dep(state: State) -> BaseServerConfig:
+        return cast(BaseServerConfig, state.get("server_config"))
 
     auth_mw = DefineMiddleware(AuthMiddleware, exclude="/auth/")
-    template_config = init_jinja(core, custom_jinja)
+    template_config = init_jinja(core, server_config, custom_jinja)
     flash_plugin = FlashPlugin(config=FlashConfig(template_config=template_config))
 
     return Litestar(
@@ -59,19 +70,19 @@ def init_server(core: BaseCoreAny, custom_jinja: CustomJinja, ui_router: Router,
             ui_router,
             api_router,
         ],
-        state=State({"core": core}),
-        dependencies={"core": core_dep},
+        state=State({"core": core, "server_config": server_config}),
+        dependencies={"core": core_dep, "server_config": server_config_dep},
         plugins=[flash_plugin],
         middleware=[ServerSideSessionConfig().middleware, auth_mw],
         template_config=template_config,
         type_encoders=TYPE_ENCODERS,
         on_shutdown=[lambda: core.shutdown()],
         exception_handlers={Exception: all_exceptions_handler},
-        debug=core.app_config.debug,
+        debug=core.core_config.debug,
         openapi_config=OpenAPIConfig(
-            title=core.app_config.app_name,
-            version=core.app_config.app_version,
-            tags=[*[Tag(name=t) for t in core.app_config.tags], Tag(name="system", description="mm-base3 system api")],
+            title=core.core_config.app_name,
+            version=utils.get_package_version("app"),
+            tags=[*[Tag(name=t) for t in server_config.tags], Tag(name="system", description="mm-base3 system api")],
         ),
     )
 
@@ -89,7 +100,7 @@ def all_exceptions_handler(req: Request[Any, Any, Any], exc: Exception) -> Respo
             core.logger.exception(exc)
             message += "\n\n" + traceback.format_exc()
 
-        if not core.app_config.debug:
+        if not core.core_config.debug:
             message = "error"
 
     return Response(media_type=MediaType.TEXT, content=message, status_code=code)

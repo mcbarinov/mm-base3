@@ -1,3 +1,5 @@
+import importlib.metadata
+
 from litestar.response import Template
 
 
@@ -15,3 +17,10 @@ def process_form_with_checkboxes(data: dict[str, object]) -> dict[str, str]:
         else:
             result[key] = value
     return result
+
+
+def get_package_version(package: str) -> str:
+    try:
+        return importlib.metadata.version(package)
+    except importlib.metadata.PackageNotFoundError:
+        return " unknown"

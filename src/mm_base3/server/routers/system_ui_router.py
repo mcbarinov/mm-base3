@@ -4,7 +4,7 @@ from litestar import Controller, Router, get, post
 from litestar.plugins.flash import flash
 from litestar.response import Redirect, Template
 
-from mm_base3.core.base_core import BaseCoreAny
+from mm_base3.core.core import BaseCoreAny
 from mm_base3.server import utils
 from mm_base3.server.types_ import FormBody, RequestAny
 from mm_base3.server.utils import render_html

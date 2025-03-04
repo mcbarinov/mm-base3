@@ -6,11 +6,11 @@ import toml
 from mm_std import Scheduler
 from pydantic import BaseModel
 
-from mm_base3.config import BaseAppConfig
-from mm_base3.core.base_db import BaseDb, DConfigType
+from mm_base3.core.config import CoreConfig
+from mm_base3.core.db import BaseDb, DConfigType
 from mm_base3.core.dconfig import DConfigStorage
 from mm_base3.core.dvalue import DValueStorage
-from mm_base3.errors import UserError
+from mm_base3.core.errors import UserError
 
 
 class Stats(BaseModel):
@@ -41,10 +41,10 @@ class DValueInfo(BaseModel):
 
 # noinspection PyMethodMayBeStatic
 class SystemService:
-    def __init__(self, app_config: BaseAppConfig, logger: Logger, db: BaseDb, scheduler: Scheduler) -> None:
+    def __init__(self, core_config: CoreConfig, logger: Logger, db: BaseDb, scheduler: Scheduler) -> None:
         self.logger = logger
         self.db = db
-        self.logfile = app_config.data_dir / "app.log"
+        self.logfile = core_config.data_dir / "app.log"
         self.scheduler = scheduler
 
     # dconfig

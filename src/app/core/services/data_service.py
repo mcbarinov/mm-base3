@@ -4,13 +4,13 @@ from bson import ObjectId
 from mm_std import hr
 from pymongo.results import InsertManyResult, InsertOneResult
 
-from app.config import AppConfig, DConfigSettings, DValueSettings
 from app.core.db import Data, DataStatus, Db
+from app.settings import DConfigSettings, DValueSettings
 from mm_base3 import BaseService, BaseServiceParams
 
 
-class DataService(BaseService[AppConfig, DConfigSettings, DValueSettings, Db]):
-    def __init__(self, base_params: BaseServiceParams[AppConfig, DConfigSettings, DValueSettings, Db]) -> None:
+class DataService(BaseService[DConfigSettings, DValueSettings, Db]):
+    def __init__(self, base_params: BaseServiceParams[DConfigSettings, DValueSettings, Db]) -> None:
         super().__init__(base_params)
 
     def generate_data(self) -> InsertOneResult:

@@ -3,8 +3,8 @@ from typing import Any, Literal
 from litestar import Controller, Response, get
 from mm_std import hr
 
-from mm_base3.core.base_core import BaseCoreAny
 from mm_base3.server.auth import ACCESS_TOKEN_NAME
+from mm_base3.server.config import BaseServerConfig
 from mm_base3.server.types_ import RequestAny
 
 
@@ -14,12 +14,12 @@ class APIMethodController(Controller):
     tags = ["api-method"]
 
     @get("/api-post/{url:path}", sync_to_thread=True)
-    def post(self, core: BaseCoreAny, url: str, request: RequestAny) -> Response[Any]:
-        return self._api_method("POST", url, core.app_config.use_https, core.app_config.access_token, request)
+    def post(self, server_config: BaseServerConfig, url: str, request: RequestAny) -> Response[Any]:
+        return self._api_method("POST", url, server_config.use_https, server_config.access_token, request)
 
     @get("/api-delete/{url:path}", sync_to_thread=True)
-    def delete(self, core: BaseCoreAny, url: str, request: RequestAny) -> Response[Any]:
-        return self._api_method("DELETE", url, core.app_config.use_https, core.app_config.access_token, request)
+    def delete(self, server_config: BaseServerConfig, url: str, request: RequestAny) -> Response[Any]:
+        return self._api_method("DELETE", url, server_config.use_https, server_config.access_token, request)
 
     @staticmethod
     def _api_method(

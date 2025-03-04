@@ -20,7 +20,7 @@ class DataService(BaseService[AppConfig, DConfigSettings, DValueSettings, Db]):
         res = hr("https://httpbin.org/get")
         self.dlog("data_generated", {"status": status, "value": value, "res": res.json, "large-data": "abc" * 100})
         # print(type(self.dconfig))
-        self.dlog("ddd", self.dconfig.telegram_token2)
+        self.dlog("ddd", self.dconfig.telegram_token)
 
         # self.send_telegram_message(f"a new data: {value}")
         return self.db.data.insert_one(Data(id=ObjectId(), status=status, value=value))

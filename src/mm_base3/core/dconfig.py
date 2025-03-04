@@ -41,62 +41,59 @@ class DC[T: (str, bool, int, float, Decimal)]:
         self.key = name
 
 
-class DConfigDict(dict[str, object]):
-    descriptions: ClassVar[dict[str, str]] = {}
-    types: ClassVar[dict[str, DConfigType]] = {}
-    hidden: ClassVar[set[str]] = set()
+class DConfigModel:
+    pass
 
+
+class DConfigDict(dict[str, object]):
     def __getattr__(self, item: str) -> object:
         if item not in self:
             raise UnregisteredDConfigError(item)
 
         return self.get(item, None)
 
-    def get_or_none(self, key: str) -> object | None:
-        try:
-            return self.get(key)
-        except UnregisteredDConfigError:
-            return None
+    # def get_or_none(self, key: str) -> object | None:
+    #     try:
+    #         return self.get(key)
+    #     except UnregisteredDConfigError:
+    #         return None
+    #
 
-    def get_non_hidden_keys(self) -> set[str]:
-        return self.keys() - self.hidden
-
-    def get_type(self, key: str) -> DConfigType:
-        return self.types[key]
-
-    @classmethod
-    def get_attrs(cls) -> list[DC[Any]]:
-        attrs: list[DC[Any]] = []
-        keys = get_registered_public_attributes(cls)
-        for key in keys:
-            field = getattr(cls, key)
-            if isinstance(field, DC):
-                attrs.append(field)
-        attrs.sort(key=lambda x: x.order)
-
-        return attrs
+    # @classmethod
+    # def get_attrs(cls) -> list[DC[Any]]:
+    #     attrs: list[DC[Any]] = []
+    #     keys = get_registered_public_attributes(cls)
+    #     for key in keys:
+    #         field = getattr(cls, key)
+    #         if isinstance(field, DC):
+    #             attrs.append(field)
+    #     attrs.sort(key=lambda x: x.order)
+    #
+    #     return attrs
 
 
 class DConfigStorage:
     storage = DConfigDict()
+    descriptions: ClassVar[dict[str, str]] = {}
+    types: ClassVar[dict[str, DConfigType]] = {}
+    hidden: ClassVar[set[str]] = set()
     collection: MongoCollection[str, DConfig]
     dlog: Callable[[str, object], None]
 
     @classmethod
     @synchronized
-    def init_storage[DCONFIG: DConfigDict](
-        cls, collection: MongoCollection[str, DConfig], dconfig_settings: DCONFIG, dlog: Callable[[str, object], None]
+    def init_storage[DCONFIG: DConfigModel](
+        cls, collection: MongoCollection[str, DConfig], dconfig_settings: type[DCONFIG], dlog: Callable[[str, object], None]
     ) -> DCONFIG:
-        cls.storage = type(dconfig_settings)()
         cls.collection = collection
         cls.dlog = dlog
 
-        for attr in dconfig_settings.get_attrs():
+        for attr in get_attrs(dconfig_settings):
             type_ = get_type(attr.value)
-            cls.storage.descriptions[attr.key] = attr.description
-            cls.storage.types[attr.key] = type_
+            cls.descriptions[attr.key] = attr.description
+            cls.types[attr.key] = type_
             if attr.hide:
-                cls.storage.hidden.add(attr.key)
+                cls.hidden.add(attr.key)
 
             dv = collection.get_or_none(attr.key)
             if dv:
@@ -111,7 +108,7 @@ class DConfigStorage:
 
         # remove rows which not in settings.DCONFIG
         collection.delete_many({"_id": {"$nin": get_registered_public_attributes(dconfig_settings)}})
-        return cls.storage
+        return cast(DCONFIG, cls.storage)
 
     @classmethod
     def update_multiline(cls, key: str, value: str) -> None:
@@ -126,7 +123,7 @@ class DConfigStorage:
             if key in cls.storage:
                 str_value = data.get(key) or ""  # for BOOLEAN type (checkbox)
                 str_value = str_value.replace("\r", "")  # for MULTILINE (textarea do it)
-                type_value_res = get_typed_value(cls.storage.types[key], str_value.strip())
+                type_value_res = get_typed_value(cls.types[key], str_value.strip())
                 if isinstance(type_value_res, Ok):
                     cls.collection.set(key, {"value": str_value, "updated_at": utc_now()})
                     cls.storage[key] = type_value_res.ok
@@ -140,15 +137,22 @@ class DConfigStorage:
 
     @classmethod
     def export_as_toml(cls) -> str:
-        result = pydash.omit(cls.storage, *cls.storage.hidden)
+        result = pydash.omit(cls.storage, *cls.hidden)
         return toml.dumps(result)
 
     @classmethod
     def update_from_toml(cls, toml_value: str) -> bool | None:
         data = toml.loads(toml_value)
-
         if isinstance(data, dict):
             return cls.update({key: str(value) for key, value in data.items()})
+
+    @classmethod
+    def get_non_hidden_keys(cls) -> set[str]:
+        return cls.storage.keys() - cls.hidden
+
+    @classmethod
+    def get_type(cls, key: str) -> DConfigType:
+        return cls.types[key]
 
 
 def get_type(value: object) -> DConfigType:
@@ -188,3 +192,14 @@ def get_str_value(type_: DConfigType, value: object) -> str:
     if type_ is DConfigType.BOOLEAN:
         return "True" if value else ""
     return str(value)
+
+
+def get_attrs(dconfig_settings: type[DConfigModel]) -> list[DC[Any]]:
+    attrs: list[DC[Any]] = []
+    keys = get_registered_public_attributes(dconfig_settings)
+    for key in keys:
+        field = getattr(dconfig_settings, key)
+        if isinstance(field, DC):
+            attrs.append(field)
+    attrs.sort(key=lambda x: x.order)
+    return attrs

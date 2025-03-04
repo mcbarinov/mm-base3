@@ -20,14 +20,14 @@
         <th>value</th>
       </tr>
       {% for key, value in dconfig.items() %}
-        {% if key not in dconfig.hidden %}
+        {% if key not in hidden %}
           <tr>
             <td>{{ key }}</td>
-            <td>{{ dconfig.types[key].value }}</td>
+            <td>{{ types[key].value }}</td>
             <td>
-              {% if dconfig.types[key].value == "BOOLEAN" %}
+              {% if types[key].value == "BOOLEAN" %}
                 <input type="checkbox" name="{{ key }}" {{ "checked" if value }} value="true">
-              {% elif dconfig.types[key].value =="MULTILINE" %}
+              {% elif types[key].value =="MULTILINE" %}
                 length: {{ dconfig[key] | length }} /
                 <a href="/system/dconfig/multiline/{{ key }}">update</a>
               {% else %}

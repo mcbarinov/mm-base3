@@ -32,7 +32,9 @@ class SystemUIController(Controller):
     @get("dconfig", sync_to_thread=False)
     def dconfig_page(self, core: BaseCoreAny) -> Template:
         dconfig = core.dconfig
-        return render_html("dconfig.j2", dconfig=dconfig)
+        hidden = DConfigStorage.hidden
+        types = DConfigStorage.types
+        return render_html("dconfig.j2", dconfig=dconfig, hidden=hidden, types=types)
 
     @get("dvalue", sync_to_thread=False)
     def dvalue_page(self, core: BaseCoreAny) -> Template:
@@ -49,10 +51,12 @@ class SystemUIController(Controller):
         return render_html("dconfig_multiline.j2", dconfig=dconfig, key=key)
 
     @post("dconfig", sync_to_thread=True)
-    def update_dconfig(self, core: BaseCoreAny, data: Annotated[dict[str, str], FormBody], request: RequestAny) -> Redirect:
+    def update_dconfig(self, data: Annotated[dict[str, str], FormBody], request: RequestAny) -> Redirect:
         """Update dconfig values  that are neither multiline nor hidden"""
         update_data = {
-            x: data.get(x, "") for x in core.dconfig.get_non_hidden_keys() if core.dconfig.get_type(x) != DConfigType.MULTILINE
+            x: data.get(x, "")
+            for x in DConfigStorage.get_non_hidden_keys()
+            if DConfigStorage.get_type(x) != DConfigType.MULTILINE
         }
         DConfigStorage.update(update_data)
         flash(request, "dconfig updated successfully", "success")
@@ -84,7 +88,7 @@ class DLogController(Controller):
 
 
 class DConfigController(Controller):
-    path = "/api/system/dconfigs"
+    path = "/api/system/dconfig"
 
     @get("toml", sync_to_thread=True)
     def get_dconfigs_as_toml(self) -> str:

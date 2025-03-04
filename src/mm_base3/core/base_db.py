@@ -41,6 +41,26 @@ class DConfig(MongoModel[str]):
     }
 
 
+class DValue(MongoModel[str]):
+    value: str
+    updated_at: datetime | None = None
+    created_at: datetime = Field(default_factory=utc_now)
+
+    __collection__: str = "dvalue"
+    __validator__: ClassVar[dict[str, object]] = {
+        "$jsonSchema": {
+            "required": ["value", "updated_at", "created_at"],
+            "additionalProperties": False,
+            "properties": {
+                "_id": {"bsonType": "string"},
+                "value": {"bsonType": "string"},
+                "updated_at": {"bsonType": ["date", "null"]},
+                "created_at": {"bsonType": "date"},
+            },
+        },
+    }
+
+
 class DLog(MongoModel[ObjectId]):
     category: str
     data: object
@@ -56,26 +76,6 @@ class DLog(MongoModel[ObjectId]):
                 "_id": {"bsonType": "objectId"},
                 "category": {"bsonType": "string"},
                 "data": {},
-                "created_at": {"bsonType": "date"},
-            },
-        },
-    }
-
-
-class DValue(MongoModel[str]):
-    value: str
-    updated_at: datetime | None = None
-    created_at: datetime = Field(default_factory=utc_now)
-
-    __collection__: str = "dvalue"
-    __validator__: ClassVar[dict[str, object]] = {
-        "$jsonSchema": {
-            "required": ["value", "updated_at", "created_at"],
-            "additionalProperties": False,
-            "properties": {
-                "_id": {"bsonType": "string"},
-                "value": {"bsonType": "string"},
-                "updated_at": {"bsonType": ["date", "null"]},
                 "created_at": {"bsonType": "date"},
             },
         },

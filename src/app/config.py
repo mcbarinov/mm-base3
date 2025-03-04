@@ -3,7 +3,8 @@ from decimal import Decimal
 from mm_std import utc_now
 from pydantic import Field
 
-from mm_base3 import DC, DV, BaseAppConfig, DConfigDict, DValueDict
+from mm_base3 import DC, DV, BaseAppConfig, DValueDict
+from mm_base3.core.dconfig import DConfigModel
 
 
 class AppConfig(BaseAppConfig):
@@ -15,7 +16,7 @@ class AppConfig(BaseAppConfig):
 """
 
 
-class DConfigSettings(DConfigDict):
+class DConfigSettings(DConfigModel):
     telegram_token = DC("", "telegram bot token", hide=True)
     telegram_chat_id = DC(0, "telegram chat id")
     telegram_polling = DC(False)

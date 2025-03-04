@@ -1,14 +1,11 @@
 {% extends "inc/base.j2" %}
 {% block content %}
-  <div>
-
-    <nav>
-      <ul>
-        <li><h3>dvalue</h3></li>
-        <li><a href="/api/system/dvalue/toml">view</a></li>
-      </ul>
-    </nav>
-  </div>
+  <nav>
+    <ul>
+      <li><h3>dvalue</h3></li>
+      <li><a href="/api/system/dvalues/toml">view</a></li>
+    </ul>
+  </nav>
 
   <table>
     <thead>
@@ -22,17 +19,17 @@
     </tr>
     </thead>
     <tbody>
-    {% for key, value in dvalue.items() %}
+    {% for key, value in info.dvalue.items() %}
       <tr>
-        <td title="{{ dvalue.descriptions[key] | escape }}">{{ key }}</td>
+        <td title="{{ info.descriptions[key] | escape }}">{{ key }}</td>
         <td>
           {{ value | string | truncate(119) }}
         </td>
-        <td>{{ dvalue.persistent[key] | yes_no }}</td>
+        <td>{{ info.persistent[key] | yes_no }}</td>
         <td><a href="/api/system/dvalues/{{ key }}/toml">toml</a></td>
         <td><a href="/update-dvalue/{{ key }}">update</a></td>
         <td>
-          {% if dvalue.persistent[key] %}
+          {% if info.persistent[key] %}
             <a href="/api/system/dvalues/{{ key }}">db</a>
           {% endif %}
           <a href="/api/system/dvalues/{{ key }}/value">value</a>
@@ -41,7 +38,5 @@
     {% endfor %}
     </tbody>
   </table>
-
-
 
 {% endblock %}

@@ -16,17 +16,13 @@ class DataService(BaseService[AppConfig, DConfigSettings, DValueSettings, Db]):
     def generate_data(self) -> InsertOneResult:
         status = random.choice(list(DataStatus))
         value = random.randint(0, 1_000_000)
-        self.logger.debug("generate_data %s %s", status, value)
-        res = hr("https://httpbin.org/get")
-        self.dlog("data_generated", {"status": status, "value": value, "res": res.json, "large-data": "abc" * 100})
-        # print(type(self.dconfig))
-        self.dlog("ddd", self.dconfig.telegram_token)
-        # self.dlog("ddd", self.dvalue.telegram_token)
 
-        # self.send_telegram_message(f"a new data: {value}")
         return self.db.data.insert_one(Data(id=ObjectId(), status=status, value=value))
 
     def generate_many(self) -> InsertManyResult:
+        res = hr("https://httpbin.org/get")
+        self.dlog("generate_many", {"res": res.json, "large-data": "abc" * 100})
+        self.dlog("ddd", self.dconfig.telegram_token)
         new_data_list = [
             Data(id=ObjectId(), status=random.choice(list(DataStatus)), value=random.randint(0, 1_000_000)) for _ in range(10)
         ]

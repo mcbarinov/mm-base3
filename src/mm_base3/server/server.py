@@ -23,7 +23,8 @@ from mm_base3.server.auth import AuthMiddleware
 from mm_base3.server.jinja import init_jinja
 from mm_base3.server.routers.api_method_router import APIMethodController
 from mm_base3.server.routers.auth_router import AuthController
-from mm_base3.server.routers.system_router import system_router
+from mm_base3.server.routers.system_api_router import system_api_router
+from mm_base3.server.routers.system_ui_router import system_ui_router
 
 TYPE_ENCODERS = {
     DeleteResult: lambda x: x.raw_result,
@@ -53,7 +54,8 @@ def init_server(core: BaseCoreAny, custom_jinja: CustomJinja, ui_router: Router,
             create_static_files_router(path="/assets", directories=[ASSETS]),
             APIMethodController,
             AuthController,
-            system_router,
+            system_ui_router,
+            system_api_router,
             ui_router,
             api_router,
         ],

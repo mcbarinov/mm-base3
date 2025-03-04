@@ -5,7 +5,6 @@ import itertools
 import pickle  # nosec: B403
 from typing import Any, ClassVar, cast, overload
 
-import toml
 from mm_mongo import MongoCollection
 from mm_std import synchronized, utc_now
 
@@ -46,9 +45,6 @@ class DValueModel:
 
 
 class DValueDict(dict[str, object]):
-    persistent: ClassVar[dict[str, bool]] = {}
-    descriptions: ClassVar[dict[str, str]] = {}
-
     def __getattr__(self, item: str) -> object:
         if item not in self:
             raise UnregisteredDValueError(item)
@@ -57,20 +53,15 @@ class DValueDict(dict[str, object]):
     def __setattr__(self, key: str, value: object) -> None:
         if key not in self:
             raise UnregisteredDValueError(key)
-        if DValueDict.persistent[key]:
+        if DValueStorage.persistent[key]:
             DValueStorage.update_persistent_value(key, value)
         self[key] = value
-
-    def init_value(self, key: str, value: object, description: str, persistent: bool) -> None:
-        DValueDict.persistent[key] = persistent
-        DValueDict.descriptions[key] = description
-        self[key] = value
-        if persistent:
-            DValueStorage.init_persistent_value(key, value)
 
 
 class DValueStorage:
     storage = DValueDict()
+    persistent: ClassVar[dict[str, bool]] = {}
+    descriptions: ClassVar[dict[str, str]] = {}
     collection: MongoCollection[str, DValue]
 
     @classmethod
@@ -87,34 +78,26 @@ class DValueStorage:
                 dvalue_from_db = collection.get_or_none(attr.key)
                 if dvalue_from_db:
                     value = decode_value(dvalue_from_db.value)
-            cls.storage.init_value(attr.key, value, attr.description, attr.persistent)
+            cls.init_value(attr.key, value, attr.description, attr.persistent)
 
         # remove rows which not in persistent_keys
         collection.delete_many({"_id": {"$nin": persistent_keys}})
         return cast(DVALUE, cls.storage)
 
     @classmethod
-    def init_persistent_value(cls, key: str, value: object) -> None:
-        if not cls.collection.exists({"_id": key}):
-            cls.collection.insert_one(DValue(id=key, value=encode_value(value)))
-        else:
-            cls.update_persistent_value(key, value)
+    def init_value(cls, key: str, value: object, description: str, persistent: bool) -> None:
+        cls.persistent[key] = persistent
+        cls.descriptions[key] = description
+        cls.storage[key] = value
+        if persistent:
+            if not cls.collection.exists({"_id": key}):
+                cls.collection.insert_one(DValue(id=key, value=encode_value(value)))
+            else:
+                cls.update_persistent_value(key, value)
 
     @classmethod
     def update_persistent_value(cls, key: str, value: object) -> None:
         cls.collection.update(key, {"$set": {"value": encode_value(value), "updated_at": utc_now()}})
-
-    @classmethod
-    def export_as_toml(cls) -> str:
-        return toml.dumps(cls.storage)
-
-    @classmethod
-    def export_field_as_toml(cls, key: str) -> str:
-        return toml.dumps({key: cls.storage[key]})
-
-    @classmethod
-    def get_value(cls, key: str) -> object:
-        return cls.storage[key]
 
 
 def encode_value(value: object) -> str:

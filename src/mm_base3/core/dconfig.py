@@ -5,8 +5,6 @@ from collections.abc import Callable
 from decimal import Decimal
 from typing import Any, ClassVar, cast, overload
 
-import pydash
-import toml
 from mm_mongo import MongoCollection
 from mm_std import Err, Ok, Result, synchronized, utc_now
 
@@ -92,12 +90,6 @@ class DConfigStorage:
         return cast(DCONFIG, cls.storage)
 
     @classmethod
-    def update_multiline(cls, key: str, value: str) -> None:
-        value = value.replace("\r", "")
-        cls.collection.set(key, {"value": value, "updated_at": utc_now()})
-        cls.storage[key] = value
-
-    @classmethod
     def update(cls, data: dict[str, str]) -> bool:
         result = True
         for key in data:
@@ -115,17 +107,6 @@ class DConfigStorage:
                 cls.dlog("DConfigStorage.update", {"error": "unknown key", "key": key})
                 result = False
         return result
-
-    @classmethod
-    def export_as_toml(cls) -> str:
-        result = pydash.omit(cls.storage, *cls.hidden)
-        return toml.dumps(result)
-
-    @classmethod
-    def update_from_toml(cls, toml_value: str) -> bool | None:
-        data = toml.loads(toml_value)
-        if isinstance(data, dict):
-            return cls.update({key: str(value) for key, value in data.items()})
 
     @classmethod
     def get_non_hidden_keys(cls) -> set[str]:
@@ -175,6 +156,7 @@ def get_str_value(type_: DConfigType, value: object) -> str:
     return str(value)
 
 
+# noinspection DuplicatedCode
 def get_attrs(dconfig_settings: type[DConfigModel]) -> list[DC[Any]]:
     attrs: list[DC[Any]] = []
     keys = get_registered_public_attributes(dconfig_settings)

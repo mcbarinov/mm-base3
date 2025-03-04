@@ -10,6 +10,7 @@ from mm_base3.config import BaseAppConfig
 from mm_base3.core.base_db import BaseDb, DConfigType
 from mm_base3.core.dconfig import DConfigStorage
 from mm_base3.core.dvalue import DValueStorage
+from mm_base3.errors import UserError
 
 
 class Stats(BaseModel):
@@ -84,6 +85,12 @@ class SystemService:
 
     def get_dvalue_value(self, key: str) -> object:
         return DValueStorage.storage[key]
+
+    def update_dvalue_field(self, key: str, toml_str: str) -> None:
+        data = toml.loads(toml_str)
+        if key not in data:
+            raise UserError(f"Key '{key}' not found in toml data")
+        DValueStorage.storage[key] = data[key]
 
     # system
 

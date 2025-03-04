@@ -40,6 +40,11 @@ class PagesController(Controller):
         dconfig = core.dconfig
         return render_html("dconfigs_multiline.j2", dconfig=dconfig, key=key)
 
+    @get("update-dvalue/{key:str}", sync_to_thread=True)
+    def update_dvalue_page(self, core: BaseCoreAny, key: str) -> Template:
+        value = core.system_service.export_dvalue_field_as_toml(key)
+        return render_html("dvalues_update.j2", value=value, key=key)
+
 
 class ActionsController(Controller):
     @post("dconfigs", sync_to_thread=True)
@@ -55,6 +60,14 @@ class ActionsController(Controller):
         core.system_service.update_dconfig({key: data["value"]})
         flash(request, "dconfig updated successfully", "success")
         return Redirect(path="/system/dconfigs")
+
+    @post("update-dvalue/{key:str}", sync_to_thread=True)
+    def update_dvalue_field(
+        self, core: BaseCoreAny, key: str, data: Annotated[dict[str, str], FormBody], request: RequestAny
+    ) -> Redirect:
+        core.system_service.update_dvalue_field(key, data["value"])
+        flash(request, "dvalue updated successfully", "success")
+        return Redirect(path="/system/dvalues")
 
     @post("dconfigs/toml", sync_to_thread=True)
     def update_dconfig_from_toml(

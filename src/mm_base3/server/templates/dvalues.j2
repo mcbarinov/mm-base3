@@ -27,7 +27,7 @@
         </td>
         <td>{{ info.persistent[key] | yes_no }}</td>
         <td><a href="/api/system/dvalues/{{ key }}/toml">toml</a></td>
-        <td><a href="/update-dvalue/{{ key }}">update</a></td>
+        <td><a href="/system/update-dvalue/{{ key }}">update</a></td>
         <td>
           {% if info.persistent[key] %}
             <a href="/api/system/dvalues/{{ key }}">db</a>
